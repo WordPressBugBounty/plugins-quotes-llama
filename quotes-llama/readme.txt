@@ -3,10 +3,10 @@ Contributors: oooorgle
 Donate link: http://oooorgle.com/plugins/wp/quotes-llama/
 Tags: Quote, Think, Share
 Requires at least: 4.2.2
-Tested up to: 6.6.1
-Stable tag: 3.0.0
-License: CopyHeart
-License URI: http://oooorgle.com/copyheart
+Tested up to: 6.7.1
+Stable tag: 3.0.1
+License: GPLv3
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Create a collection of quotes.
 
@@ -16,7 +16,7 @@ Create a collection of quotes.
 * **Categories**
 * **Author and Source Icons**
 * **Backup (export) and Restore (import) in ".csv or .json" formats.**
-* **... many options.**
+* **... among other options.**
 
 == Frequently Asked Questions ==
 = (Support) =
@@ -90,9 +90,6 @@ Create a collection of quotes.
 * Create a link by entering the url.
 * Create a new line in the quotes field with (enter) or (shift+enter).
 
-= Beta Testing =
-* Some features or specific parts of this plugin may still be in testing mode. Assistance identifying hidden bugs is encouraged. If you have found a bug, please submit a support ticket.
-
 = Icons =
 * The WordPress Dash-Icons set is included by default.
 * Custom image icons (png, gif, jpg, bmp, svg) can be copied to the "wp-content/uploads/quotes-llama/" directory.
@@ -120,7 +117,10 @@ Navigate to your Dashboard–>Appearance–>Customize–>Additional CSS. DO NOT 
 
 = Shortcodes =
 Use the plugin by including a shortcode or by including the widget in the desired location:
-*Separate multiple categories and id's with a comma. e.g. 'category, category, etc'
+
+Separate multiple categories and id's with a comma. e.g. 'category, category, etc'
+
+Short-codes are informational and for example only. Depending on your encoding, you may experience problems if using copy and paste.
 
 **To include this plugin in a Block, Page or Post:**
 
@@ -244,7 +244,6 @@ Use the plugin by including a shortcode or by including the widget in the desire
 
 == Changelog ==
 = Upgrade Notice =
-* Some options have been added or changed... Check and Save the options by visiting the options tab and clicking Save at the bottom.
 * If you encounter problems, please refer to the Support and Troubleshooting FAQ.
 * [Version History](https://oooorgle.com/downloads/quotes-llama/dev/versions.htm)
 

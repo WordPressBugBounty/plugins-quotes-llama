@@ -7,8 +7,8 @@
  * @Link        http://wordpress.org/plugins/quotes-llama/
  * @package     quotes-llama
  * @since       3.0.0
- * License:     Copyheart
- * License URI: http://copyheart.org
+ * License:     GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 namespace Quotes_Llama;
@@ -2134,7 +2134,7 @@ class QuotesLlama_Admin {
 						target='_blank'
 						title='<?php esc_attr_e( 'Rate the plugin / Write a review.', 'quotes-llama' ); ?>'>
 						<?php
-						esc_html_e( ' Rate this plugin / Write a Review', 'quotes-llama' );
+						esc_html_e( 'Rate this plugin / Write a Review', 'quotes-llama' );
 						?>
 					</a>
 					<br>

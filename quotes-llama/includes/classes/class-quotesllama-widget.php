@@ -7,8 +7,8 @@
  * @Link        http://wordpress.org/plugins/quotes-llama/
  * @package     quotes-llama
  * @since       1.0.0
- * License:     Copyheart
- * License URI: http://copyheart.org
+ * License:     GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 namespace Quotes_Llama;

@@ -7,8 +7,8 @@
  * @Link        http://wordpress.org/plugins/quotes-llama/
  * @package     quotes-llama
  * @since       3.0.0
- * License:     Copyheart
- * License URI: http://copyheart.org
+ * License:     GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 namespace Quotes_Llama;
@@ -258,8 +258,8 @@ class QuotesLlama_All {
 				array(
 					'base'      => add_query_arg( 'ql_page', '%#%' ),
 					'format'    => '',
-					'prev_text' => __( '&laquo;' ),
-					'next_text' => __( '&raquo;' ),
+					'prev_text' => __( '&laquo;', 'quotes-llama' ),
+					'next_text' => __( '&raquo;', 'quotes-llama' ),
 					'total'     => $total_pages,
 					'current'   => $this_page,
 				)

@@ -1,8 +1,8 @@
 <?php
 /**
- * Quotes Llama Import.
+ * Quotes Llama Export JSON.
  *
- * Description. Import quotes from .csv or .json.
+ * Description. Export quotes to a .json file.
  *
  * @Link        http://wordpress.org/plugins/quotes-llama/
  * @package     quotes-llama
@@ -13,15 +13,15 @@
 
 namespace Quotes_Llama;
 
-if ( check_admin_referer( 'quote_llama_import_nonce', 'quote_llama_import_nonce' ) ) {
+if ( check_admin_referer( 'quotes_llama_export_nonce', 'quotes_llama_export_nonce' ) ) {
 
 	if ( ! class_exists( 'QuotesLlama_Backup' ) ) {
 		require_once QL_PATH . 'includes/classes/class-quotesllama-backup.php';
 	}
 
-	$import    = new QuotesLlama_Backup( $this->check_option( 'export_delimiter' ) );
-	$nonce     = wp_create_nonce( 'quotes_llama_import' );
-	$this->msg = $this->message( 'Transaction completed: ' . $import->generate_import( $nonce ), 'yay' );
+	$export_json = new QuotesLlama_Backup( $this->check_option( 'export_delimiter' ) );
+	$nonce       = wp_create_nonce( 'quotes_llama_export_json' );
+	$export_json->create_json( $nonce );
 
 } else {
 	$this->msg = $this->message( '', 'nonce' );

@@ -7,8 +7,8 @@
  * @Link        http://wordpress.org/plugins/quotes-llama/
  * @package     quotes-llama
  * @since       1.0.0
- * License:     Copyheart
- * License URI: http://copyheart.org
+ * License:     GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 namespace Quotes_Llama;
@@ -139,221 +139,231 @@ class QuotesLlama_Backup {
 	/**
 	 * Get data for .json and create the file.
 	 *
+	 * @param string $nonce - nonce.
+	 *
 	 * @since 1.0.0
 	 * @access public
 	 */
-	public function create_json() {
+	public function create_json( $nonce ) {
 		global $wpdb;
 		$date_now = gmdate( 'd-m-Y_His' );
 
-		$quotes = $wpdb->get_results( // phpcs:ignore
-			'SELECT * FROM ' .
-			$wpdb->prefix .
-			'quotes_llama',
-			ARRAY_A
-		);
+		if ( wp_verify_nonce( $nonce, 'quotes_llama_export_json' ) ) {
 
-		foreach ( $quotes as $quote => $data ) {
-			unset( $data['quote_id'] );
-			$data['quote']       = htmlspecialchars( $data['quote'] );
-			$data['title_name']  = htmlspecialchars( $data['title_name'] );
-			$data['first_name']  = htmlspecialchars( $data['first_name'] );
-			$data['last_name']   = htmlspecialchars( $data['last_name'] );
-			$data['source']      = htmlspecialchars( $data['source'] );
-			$data['img_url']     = $data['img_url'];
-			$data['author_icon'] = htmlspecialchars( $data['author_icon'] );
-			$data['source_icon'] = htmlspecialchars( $data['source_icon'] );
-			$data['category']    = htmlspecialchars( $data['category'] );
-			$quotes[ $quote ]    = $data;
+			$quotes = $wpdb->get_results( // phpcs:ignore
+				'SELECT * FROM ' .
+				$wpdb->prefix .
+				'quotes_llama',
+				ARRAY_A
+			);
+
+			foreach ( $quotes as $quote => $data ) {
+				unset( $data['quote_id'] );
+				$data['quote']       = htmlspecialchars( $data['quote'] );
+				$data['title_name']  = htmlspecialchars( $data['title_name'] );
+				$data['first_name']  = htmlspecialchars( $data['first_name'] );
+				$data['last_name']   = htmlspecialchars( $data['last_name'] );
+				$data['source']      = htmlspecialchars( $data['source'] );
+				$data['img_url']     = $data['img_url'];
+				$data['author_icon'] = htmlspecialchars( $data['author_icon'] );
+				$data['source_icon'] = htmlspecialchars( $data['source_icon'] );
+				$data['category']    = htmlspecialchars( $data['category'] );
+				$quotes[ $quote ]    = $data;
+			}
+
+			$json_output = wp_json_encode( $quotes, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+			header( 'Content-Type: text/json' );
+			header( 'Content-Disposition: attachment; filename="' . $this->filename . '_' . $date_now . '.json";' );
+			echo wp_kses_post( $json_output );
+			die();
 		}
-
-		$json_output = wp_json_encode( $quotes, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
-		header( 'Content-Type: text/json' );
-		header( 'Content-Disposition: attachment; filename="' . $this->filename . '_' . $date_now . '.json";' );
-		echo wp_kses_post( $json_output );
-		die();
 	}
 
 	/**
 	 * Generates the import query string for importing from a json or csv file.
 	 *
+	 * @param string $nonce - nonce.
+	 *
 	 * @since 1.0.0
 	 * @access public
 	 */
-	public function generate_import() {
+	public function generate_import( $nonce ) {
 		global $wpdb;
 
-		// Check that we have a table to write to.
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '" . $wpdb->prefix . "quotes_llama'" ) === $wpdb->prefix . 'quotes_llama' ) { // phpcs:ignore
-			// Accepted file extensions.
-			$exts = array(
-				'json',
-				'JSON',
-				'CSV',
-				'csv',
-			);
+		if ( wp_verify_nonce( $nonce, 'quotes_llama_import' ) ) {
 
-			// Sanitize, unslash filename.
-			$filename = isset( $_FILES['quotes-llama-file']['name'] ) ? sanitize_file_name( wp_unslash( $_FILES['quotes-llama-file']['name'] ) ) : '';
+			// Check that we have a table to write to.
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '" . $wpdb->prefix . "quotes_llama'" ) === $wpdb->prefix . 'quotes_llama' ) { // phpcs:ignore
+				// Accepted file extensions.
+				$exts = array(
+					'json',
+					'JSON',
+					'CSV',
+					'csv',
+				);
 
-			// Sanitize, unslash temp filename.
-			$filetmp = isset( $_FILES['quotes-llama-file']['tmp_name'] ) ? sanitize_text_field( wp_unslash( $_FILES['quotes-llama-file']['tmp_name'] ) ) : '';
+				// Sanitize, unslash filename.
+				$filename = isset( $_FILES['quotes-llama-file']['name'] ) ? sanitize_file_name( wp_unslash( $_FILES['quotes-llama-file']['name'] ) ) : '';
 
-			// Files extension.
-			$fileext = pathinfo( $filename, PATHINFO_EXTENSION );
+				// Sanitize, unslash temp filename.
+				$filetmp = isset( $_FILES['quotes-llama-file']['tmp_name'] ) ? sanitize_text_field( wp_unslash( $_FILES['quotes-llama-file']['tmp_name'] ) ) : '';
 
-			// File error.
-			$fileerror = isset( $_FILES['quotes-llama-file']['error'] ) ? absint( wp_unslash( $_FILES['quotes-llama-file']['error'] ) ) : '';
+				// Files extension.
+				$fileext = pathinfo( $filename, PATHINFO_EXTENSION );
 
-			// Upload file or error.
-			if ( $fileerror ) {
+				// File error.
+				$fileerror = isset( $_FILES['quotes-llama-file']['error'] ) ? absint( wp_unslash( $_FILES['quotes-llama-file']['error'] ) ) : '';
 
-				// Translate error code.
-				$thismsg = $this->error_messages( $fileerror );
-				return wp_kses_post( $thismsg );
-			}
+				// Upload file or error.
+				if ( $fileerror ) {
 
-			// Upload success.
-			if ( UPLOAD_ERR_OK === $fileerror && is_uploaded_file( $filetmp ) ) {
-
-				// Validate file extension.
-				if ( ! in_array( $fileext, $exts, true ) ) {
-					return 'The file type ' . esc_html( $fileext ) . ' is not supported.';
+					// Translate error code.
+					$thismsg = $this->error_messages( $fileerror );
+					return wp_kses_post( $thismsg );
 				}
 
-				$json_data = file_get_contents( $filetmp ); // phpcs:ignore
+				// Upload success.
+				if ( UPLOAD_ERR_OK === $fileerror && is_uploaded_file( $filetmp ) ) {
 
-				// Validate has data.
-				if ( ! $json_data ) {
-					return esc_html__( 'Unable to import because the file is empty.' );
-				}
-
-				// Decode objects into array. Validate the decode.
-				if ( 'json' === $fileext || 'JSON' === $fileext ) {
-					$quote_json = json_decode( $json_data, true );
-					if ( is_null( $quote_json ) ) {
-						return wp_kses_post( $this->error_messages() );
-					} else {
-
-						// Sanitize each.
-						foreach ( $quote_json as $quote => $data ) {
-
-							$allowed_html = $this->allowed_html( 'style' );
-
-							// Filter the quote for allowed html tags.
-							if ( isset( $data['quote'] ) ) {
-								$data['quote'] = wp_check_invalid_utf8( wp_unslash( $data['quote'] ) );
-								$data['quote'] = wp_kses( trim( $data['quote'] ), $allowed_html );
-							} else {
-
-								// if no quote.
-								$data['quote'] = '';
-							}
-
-							// Filter the source for allowed html tags.
-							if ( isset( $data['source'] ) ) {
-								$data['source'] = wp_check_invalid_utf8( wp_unslash( $data['source'] ) );
-								$data['source'] = wp_kses( trim( $data['source'] ), $allowed_html );
-							} else {
-								$data['source'] = '';
-							}
-
-							$data['quote']        = htmlspecialchars_decode( $data['quote'] );
-							$data['title_name']   = sanitize_text_field( htmlspecialchars_decode( $data['title_name'] ) );
-							$data['first_name']   = sanitize_text_field( htmlspecialchars_decode( $data['first_name'] ) );
-							$data['last_name']    = sanitize_text_field( htmlspecialchars_decode( $data['last_name'] ) );
-							$data['source']       = htmlspecialchars_decode( $data['source'] );
-							$data['img_url']      = esc_url_raw( $data['img_url'] );
-							$data['author_icon']  = sanitize_text_field( htmlspecialchars_decode( $data['author_icon'] ) );
-							$data['source_icon']  = sanitize_text_field( htmlspecialchars_decode( $data['source_icon'] ) );
-							$data['category']     = sanitize_text_field( htmlspecialchars_decode( $data['category'] ) );
-							$quote_json[ $quote ] = $data;
-						}
-
-						// End Import JSON data.
-						$result = $this->quotes_import( $quote_json );
+					// Validate file extension.
+					if ( ! in_array( $fileext, $exts, true ) ) {
+						return 'The file type ' . esc_html( $fileext ) . ' is not supported.';
 					}
 
-					// If CSV file.
-				} elseif ( 'csv' === $fileext || 'CSV' === $fileext ) {
-					$header        = null;
-					$quote_entries = array();
-					$count         = 1;
-					$handle        = fopen( $filetmp, 'r' ); // phpcs:ignore
+					$json_data = file_get_contents( $filetmp ); // phpcs:ignore
 
-					if ( false !== $handle ) {
-						while ( ( $row = fgetcsv( $handle, 2000, $this->separator ) ) !== false ) { // phpcs:ignore
+					// Validate has data.
+					if ( ! $json_data ) {
+						return esc_html__( 'Unable to import because the file is empty.', 'quotes-llama' );
+					}
 
-							// Check count of $row.
-							if ( count( $row ) === 7 ) {
-								fclose( $handle ); // phpcs:ignore
-								return esc_html__(
-									'There was an error. Verification returned on line ',
-									'quotes-llama'
-								) . absint(
-									$count
-								) . esc_html__(
-									'. Be sure the csv delimiter in the options tab is set to match your file. Your files encoding may not be supported. Improper file structure such as incorrect columns and fields can cause the import to fail as well.',
-									'quotes-llama'
-								);
-							} else {
+					// Decode objects into array. Validate the decode.
+					if ( 'json' === $fileext || 'JSON' === $fileext ) {
+						$quote_json = json_decode( $json_data, true );
+						if ( is_null( $quote_json ) ) {
+							return wp_kses_post( $this->error_messages() );
+						} else {
 
-								// Combine our header and data. Assign first row data to header columns [header][row].
-								if ( ! $header ) {
-									$header = $row;
-									for ( $i = 0; $i <= 7; $i++ ) {
+							// Sanitize each.
+							foreach ( $quote_json as $quote => $data ) {
 
-										// CSV in utf8 might have BOM characters in the headers. Remove BOM characters.
-										$header[ $i ] = preg_replace( '/[\x00-\x1F\x80-\xFF]/', '', $header[ $i ] );
+								$allowed_html = $this->allowed_html( 'style' );
 
-										// Sanitize header.
-										$header[ $i ] = sanitize_text_field( $header[ $i ] );
-									}
+								// Filter the quote for allowed html tags.
+								if ( isset( $data['quote'] ) ) {
+									$data['quote'] = wp_check_invalid_utf8( wp_unslash( $data['quote'] ) );
+									$data['quote'] = wp_kses( trim( $data['quote'] ), $allowed_html );
 								} else {
 
-									for ( $i = 0; $i <= 7; $i++ ) {
-										$allowed_html = $this->allowed_html( 'style' );
-
-										// Filter the row for allowed html tags.
-										if ( isset( $row[ $i ] ) ) {
-											$row[ $i ] = wp_check_invalid_utf8( wp_unslash( $row[ $i ] ) );
-											$row[ $i ] = wp_kses( trim( $row[ $i ] ), $allowed_html );
-										} else {
-
-											// if no data in row.
-											$row[ $i ] = '';
-										}
-									}
-
-									$quote_entries[] = array_combine( $header, $row );
+									// if no quote.
+									$data['quote'] = '';
 								}
+
+								// Filter the source for allowed html tags.
+								if ( isset( $data['source'] ) ) {
+									$data['source'] = wp_check_invalid_utf8( wp_unslash( $data['source'] ) );
+									$data['source'] = wp_kses( trim( $data['source'] ), $allowed_html );
+								} else {
+									$data['source'] = '';
+								}
+
+								$data['quote']        = htmlspecialchars_decode( $data['quote'] );
+								$data['title_name']   = sanitize_text_field( htmlspecialchars_decode( $data['title_name'] ) );
+								$data['first_name']   = sanitize_text_field( htmlspecialchars_decode( $data['first_name'] ) );
+								$data['last_name']    = sanitize_text_field( htmlspecialchars_decode( $data['last_name'] ) );
+								$data['source']       = htmlspecialchars_decode( $data['source'] );
+								$data['img_url']      = esc_url_raw( $data['img_url'] );
+								$data['author_icon']  = sanitize_text_field( htmlspecialchars_decode( $data['author_icon'] ) );
+								$data['source_icon']  = sanitize_text_field( htmlspecialchars_decode( $data['source_icon'] ) );
+								$data['category']     = sanitize_text_field( htmlspecialchars_decode( $data['category'] ) );
+								$quote_json[ $quote ] = $data;
 							}
 
-							++$count;
+							// End Import JSON data.
+							$result = $this->quotes_import( $quote_json );
 						}
-						fclose( $handle ); // phpcs:ignore
 
-						// End Import CSV data.
-						$result = $this->quotes_import( $quote_entries );
+						// If CSV file.
+					} elseif ( 'csv' === $fileext || 'CSV' === $fileext ) {
+						$header        = null;
+						$quote_entries = array();
+						$count         = 1;
+						$handle        = fopen( $filetmp, 'r' ); // phpcs:ignore
+
+						if ( false !== $handle ) {
+							while ( ( $row = fgetcsv( $handle, 2000, $this->separator ) ) !== false ) { // phpcs:ignore
+
+								// Check count of $row.
+								if ( count( $row ) === 7 ) {
+									fclose( $handle ); // phpcs:ignore
+									return esc_html__(
+										'There was an error. Verification returned on line ',
+										'quotes-llama'
+									) . absint(
+										$count
+									) . esc_html__(
+										'. Be sure the csv delimiter in the options tab is set to match your file. Your files encoding may not be supported. Improper file structure such as incorrect columns and fields can cause the import to fail as well.',
+										'quotes-llama'
+									);
+								} else {
+
+									// Combine our header and data. Assign first row data to header columns [header][row].
+									if ( ! $header ) {
+										$header = $row;
+										for ( $i = 0; $i <= 7; $i++ ) {
+
+											// CSV in utf8 might have BOM characters in the headers. Remove BOM characters.
+											$header[ $i ] = preg_replace( '/[\x00-\x1F\x80-\xFF]/', '', $header[ $i ] );
+
+											// Sanitize header.
+											$header[ $i ] = sanitize_text_field( $header[ $i ] );
+										}
+									} else {
+
+										for ( $i = 0; $i <= 7; $i++ ) {
+											$allowed_html = $this->allowed_html( 'style' );
+
+											// Filter the row for allowed html tags.
+											if ( isset( $row[ $i ] ) ) {
+												$row[ $i ] = wp_check_invalid_utf8( wp_unslash( $row[ $i ] ) );
+												$row[ $i ] = wp_kses( trim( $row[ $i ] ), $allowed_html );
+											} else {
+
+												// if no data in row.
+												$row[ $i ] = '';
+											}
+										}
+
+										$quote_entries[] = array_combine( $header, $row );
+									}
+								}
+
+								++$count;
+							}
+							fclose( $handle ); // phpcs:ignore
+
+							// End Import CSV data.
+							$result = $this->quotes_import( $quote_entries );
+						}
 					}
-				}
 
-				if ( ! $result ) {
-					return esc_html__( 'Import failed. Please try again.', 'quotes-llama' );
-				} elseif ( 0 === $result ) {
-					return esc_html__( 'No quotes imported', 'quotes-llama' );
-				} else {
-					/*
-					 * Translators: Number of quotes imported.
-					 */
-					$importcount = esc_attr( _n( '%d quote imported', '%d quotes imported', $result, 'quotes-llama' ) );
-					return sprintf( $importcount, $result );
-				}
+					if ( ! $result ) {
+						return esc_html__( 'Import failed. Please try again.', 'quotes-llama' );
+					} elseif ( 0 === $result ) {
+						return esc_html__( 'No quotes imported', 'quotes-llama' );
+					} else {
+						/*
+						 * Translators: Number of quotes imported.
+						 */
+						$importcount = esc_attr( _n( '%d quote imported', '%d quotes imported', $result, 'quotes-llama' ) );
+						return sprintf( $importcount, $result );
+					}
 
-				return;
+					return;
+				}
+			} else {
+				return 'Check the database!';
 			}
-		} else {
-			return 'Check the database!';
 		}
 	}
 

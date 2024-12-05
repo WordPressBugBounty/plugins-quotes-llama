@@ -7,8 +7,8 @@
  * @package     quotes-llama
  * @since       1.0.0
  * Version:     1.3.6
- * License:     Copyheart
- * License URI: http://copyheart.org
+ * License:     GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 /**
@@ -1718,10 +1718,23 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 							rand_source = '';
 						}
 
+						// If showing author with no first or last name, omit title, icon and separator.
+						if ( ' ' === rand_first && ! rand_last ) {
+							rand_title  = '';
+							author_icon = '';
+							rand_comma  = '';
+							source_icon = show_icons( rand_source_icon );
+							rand_source = '<span class="quotes-llama-' + mode + '-source">' + rand_source + '</span>';
+						}
+
+						// Trim completed name.
+						let fin_name  = rand_title + rand_first + rand_last;
+						let rand_name = fin_name.trim();
+
 						// If showing image, populate rand_img.
 						if ( rand_img && ( false != show_image  ) ) {
 							rand_img = '<img src="' + rand_img +
-							'" title="' + rand_title + rand_first + rand_last +
+							'" title="' + rand_name +
 							'">';
 						} else {
 							rand_img = '';
@@ -1733,7 +1746,7 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 							let delayTime;
 
 							// Length of quote with author and source.
-							rand_length = rand_quote.length + rand_title.length + rand_first.length + rand_last.length + rand_source.length;
+							rand_length = rand_quote.length + rand_title.length + rand_name.length + rand_source.length;
 
 							// Delay from length rounded.
 							delayTime = parseInt( rand_length / quotes_llama_galleryinterval );
@@ -1776,7 +1789,7 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 							"<div class='quotes-llama-" + mode + "-quote' onClick='quotes_llama_manualnext(\"" + uid + "\", " + tuid + ", " + suid + ", \"" + mode + "\", \"" + gcategory + "\", \"" + nonce + "\");'>" + rand_img +
 							"<div class='quotes-llama-" + mode + "-quote quotes-llama-" + uid + "-more'>" + rand_quote +
 							" <span class='quotes-llama-" + mode + "-author'>" +
-							author_icon.trim() + rand_title + rand_first + rand_last + rand_comma +
+							author_icon.trim() + rand_name + rand_comma +
 							"<span class='quotes-llama-" + mode + "-source'>" + source_icon + rand_source + "</span>" +
 							"</span></div></div>"
 						);

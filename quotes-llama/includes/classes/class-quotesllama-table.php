@@ -7,8 +7,8 @@
  * @Link        http://wordpress.org/plugins/quotes-llama/
  * @package     quotes-llama
  * @since       1.0.0
- * License:     Copyheart
- * License URI: http://copyheart.org
+ * License:     GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 namespace Quotes_Llama;
@@ -171,9 +171,9 @@ class QuotesLlama_Table {
 			return;
 		}
 
-		echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' . esc_html__( 'Select bulk action' ) . '</label>';
+		echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' . esc_html__( 'Select bulk action', 'quotes-llama' ) . '</label>';
 		echo '<select name="action' . esc_attr( $two ) . '" id="bulk-action-selector-' . esc_attr( $which ) . '">';
-		echo '<option value="-1" selected="selected">' . esc_html__( 'Bulk Actions' ) . '</option>';
+		echo '<option value="-1" selected="selected">' . esc_html__( 'Bulk Actions', 'quotes-llama' ) . '</option>';
 
 		foreach ( $this->actions_b as $name => $title ) {
 			$class = 'edit' === $name ? ' class="hide-if-no-js"' : '';
@@ -181,7 +181,7 @@ class QuotesLlama_Table {
 		}
 
 		echo '</select>';
-		submit_button( __( 'Apply' ), 'action', false, false, array( 'id' => 'doaction$two' ) );
+		submit_button( __( 'Apply', 'quotes-llama' ), 'action', false, false, array( 'id' => 'doaction$two' ) );
 		echo '';
 	}
 
@@ -713,7 +713,7 @@ class QuotesLlama_Table {
 	 * @access private
 	 */
 	private function no_items() {
-		esc_html_e( 'No items found.' );
+		esc_html_e( 'No items found.', 'quotes-llama' );
 	}
 
 	/**
@@ -740,7 +740,7 @@ class QuotesLlama_Table {
 		/*
 		 * Translators: %d: Number of result items.
 		 */
-		$output        = '<span class="displaying-num">' . sprintf( _n( '%s item', '%s items', $total_items ), number_format_i18n( $total_items ) ) . '</span> ';
+		$output        = '<span class="displaying-num">' . sprintf( _n( '%s item', '%s items', $total_items, 'quotes-llama' ), number_format_i18n( $total_items ) ) . '</span> ';
 		$pagenum_nonce = wp_create_nonce( 'pn' );
 		$current       = $this->get_pagenum( $pagenum_nonce );
 
@@ -766,7 +766,7 @@ class QuotesLlama_Table {
 				$page_links[] = sprintf(
 					'<a class="%s" title="%s" href="%s">%s</a>',
 					'first-page' . $disable_first,
-					esc_attr__( 'Go to the first page' ),
+					esc_attr__( 'Go to the first page', 'quotes-llama' ),
 					esc_url( remove_query_arg( 'paged', $current_url ) ),
 					'<span class="dashicons dashicons-controls-skipback"></span>'
 				);
@@ -774,7 +774,7 @@ class QuotesLlama_Table {
 				$page_links[] = sprintf(
 					'<a class="%s" title="%s" href="%s">%s</a>',
 					'prev-page' . $disable_first,
-					esc_attr__( 'Go to the previous page' ),
+					esc_attr__( 'Go to the previous page', 'quotes-llama' ),
 					esc_url( add_query_arg( 'paged', max( 1, $current - 1 ), $current_url ) ),
 					'<span class="dashicons dashicons-controls-back"></span>'
 				);
@@ -784,8 +784,8 @@ class QuotesLlama_Table {
 				} else {
 					$html_current_page = sprintf(
 						'%s<input class="current-page" id="current-page-selector" title="%s" type="text" name="paged" value="%s" size="%d" />',
-						'<label for="current-page-selector" class="screen-reader-text">' . esc_html__( ' Select Page ' ) . '</label>',
-						esc_attr__( 'Current page' ),
+						'<label for="current-page-selector" class="screen-reader-text">' . esc_html__( ' Select Page ', 'quotes-llama' ) . '</label>',
+						esc_attr__( 'Current page', 'quotes-llama' ),
 						$current,
 						strlen( $total_pages )
 					);
@@ -800,14 +800,14 @@ class QuotesLlama_Table {
 				$page_links[] = sprintf(
 					"<a class='%s' title='%s' href='%s'>%s</a>",
 					'next-page' . $disable_last,
-					esc_attr__( 'Go to the next page' ),
+					esc_attr__( 'Go to the next page', 'quotes-llama' ),
 					esc_url( add_query_arg( 'paged', min( $total_pages, $current + 1 ), $current_url ) ),
 					'<span class="dashicons dashicons-controls-forward"></span>'
 				);
 				$page_links[] = sprintf(
 					"<a class='%s' title='%s' href='%s'>%s</a>",
 					'last-page' . $disable_last,
-					esc_attr__( 'Go to the last page' ),
+					esc_attr__( 'Go to the last page', 'quotes-llama' ),
 					esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
 					'<span class="dashicons dashicons-controls-skipforward"></span>'
 				);
@@ -973,7 +973,7 @@ class QuotesLlama_Table {
 
 					if ( ! empty( $columns['cb'] ) ) {
 						static $cb_counter = 1;
-						$columns['cb']     = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . esc_html__( 'Select All' ) . '</label>'
+						$columns['cb']     = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . esc_html__( 'Select All', 'quotes-llama' ) . '</label>'
 							. '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
 						$cb_counter++;
 					}

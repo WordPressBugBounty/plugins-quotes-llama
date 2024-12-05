@@ -1,17 +1,16 @@
 <?php
 /**
  * Plugin Name: Quotes llama
- * Plugin URI:  http://wordpress.org/plugins/quotes-llama/
- * Version:     3.0.0
+ * Plugin URI:  https://oooorgle.com/plugins/wp/quotes-llama/
+ * Version:     3.0.1
  * Description: Share the thoughts that mean the most... display your quotes in blocks, widgets, pages, templates, galleries or posts.
  * Author:      oooorgle
  * Author URI:  https://oooorgle.com/plugins/wp/quotes-llama/
  * Text Domain: quotes-llama
- * Domain Path: /lang
  *
  * @package     quotes-llama
- * License:     Copyheart
- * License URI: http://copyheart.org
+ * License:     GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 namespace Quotes_Llama;
@@ -27,7 +26,7 @@ defined( 'QL_URL' ) || define( 'QL_URL', plugin_dir_url( __FILE__ ) );
 defined( 'QL_PATH' ) || define( 'QL_PATH', plugin_dir_path( __FILE__ ) );
 
 // Plugin versions.
-defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.0.0' );
+defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.0.1' );
 defined( 'QL_DB_VERSION' ) || define( 'QL_DB_VERSION', '2.0.1' );
 
 /**
@@ -176,6 +175,7 @@ class QuotesLlama {
 	 * @access public
 	 *
 	 * @param string $type - Which set of allowed tags.
+	 *
 	 * @return array - Allowed html entities.
 	 */
 	public function allowed_html( $type ) {
@@ -519,7 +519,7 @@ class QuotesLlama {
 				if ( ! empty( $category ) ) {
 					$this->msg = $this->category_delete_rename_actions( $category, 'delete' );
 				} else {
-					$this->msg = $this->message( esc_html__( 'Transaction failed: Select an existing category for deletion.' ), 'nay' );
+					$this->msg = $this->message( esc_html__( 'Transaction failed: Select an existing category for deletion.', 'quotes-llama' ), 'nay' );
 				}
 			}
 
@@ -527,7 +527,7 @@ class QuotesLlama {
 				if ( ! empty( $cat_old ) ) {
 					$this->msg = $this->category_delete_rename_actions( $category, 'rename', $cat_old );
 				} else {
-					$this->msg = $this->message( esc_html__( 'Transaction failed: Select an existing category to rename.' ), 'nay' );
+					$this->msg = $this->message( esc_html__( 'Transaction failed: Select an existing category to rename.', 'quotes-llama' ), 'nay' );
 				}
 			}
 		}
@@ -1301,22 +1301,22 @@ class QuotesLlama {
 
 		// $_GET message to confirm bulk delete.
 		if ( isset( $_GET['bd'] ) ) {
-			include QL_PATH . 'includes/php/quote_bulk_delete_confirm.php';
+			include QL_PATH . 'includes/php/quote-bulk-delete-confirm.php';
 		}
 
 		// $_GET message to confirm single delete.
 		if ( isset( $_GET['d'] ) ) {
-			include QL_PATH . 'includes/php/quote_delete_confirm.php';
+			include QL_PATH . 'includes/php/quote-delete-confirm.php';
 		}
 
 		// $_POST to Export quotes to csv.
 		if ( isset( $_POST['quotes_llama_export_csv'] ) ) {
-			include QL_PATH . 'includes/php/export_csv.php';
+			include QL_PATH . 'includes/php/export-csv.php';
 		}
 
 		// $_POST to Export quotes to json.
 		if ( isset( $_POST['quotes_llama_export_json'] ) ) {
-			include QL_PATH . 'includes/php/export_json.php';
+			include QL_PATH . 'includes/php/export-json.php';
 		}
 
 		// $_POST to Import quotes.
@@ -1326,27 +1326,27 @@ class QuotesLlama {
 
 		// $_POST to remove quotes_llama table from database.
 		if ( isset( $_POST['quotes_llama_remove_table'] ) ) {
-			include QL_PATH . 'includes/php/remove_table.php';
+			include QL_PATH . 'includes/php/remove-table.php';
 		}
 
 		// $_POST to add quote.
 		if ( isset( $_POST['quotes_llama_add_quote'] ) ) {
-			include QL_PATH . 'includes/php/quote_insert.php';
+			include QL_PATH . 'includes/php/quote-insert.php';
 		}
 
 		// $_POST to update quote.
 		if ( isset( $_POST['quotes_llama_save_quote'] ) ) {
-			include QL_PATH . 'includes/php/quote_update.php';
+			include QL_PATH . 'includes/php/quote-update.php';
 		}
 
 		// $_GET to delete a single quote.
 		if ( isset( $_GET['action'] ) && 'quotes_llama_delete_single' === $_GET['action'] ) {
-			include QL_PATH . 'includes/php/quote_delete.php';
+			include QL_PATH . 'includes/php/quote-delete.php';
 		}
 
 		// $_GET to bulk delete. Upper bulk select box is action. Lower bulk select box is action2.
 		if ( ( isset( $_GET['action'] ) && 'delete' === $_GET['action'] ) || ( isset( $_GET['action2'] ) && 'delete' === $_GET['action2'] ) ) {
-			include QL_PATH . 'includes/php/quote_bulk_delete.php';
+			include QL_PATH . 'includes/php/quote-bulk-delete.php';
 		}
 	}
 
@@ -1546,6 +1546,7 @@ class QuotesLlama {
 			$san_title = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
 			$san_first = isset( $_POST['first'] ) ? sanitize_text_field( wp_unslash( $_POST['first'] ) ) : '';
 			$san_last  = isset( $_POST['last'] ) ? sanitize_text_field( wp_unslash( $_POST['last'] ) ) : '';
+			$quotes    = null;
 
 			if ( wp_verify_nonce( $nonce, 'quotes_llama_nonce' ) ) {
 				if ( '' !== $san_title ) {
@@ -1696,7 +1697,10 @@ class QuotesLlama {
 
 				$page = new QuotesLlama_Page();
 
-				echo wp_kses( $page->ql_page_author( $quotes ), $allowed_html );
+				if ( $quotes ) {
+					echo wp_kses( $page->ql_page_author( $quotes ), $allowed_html );
+				}
+
 				die();
 			} else {
 				$this->msg = $this->message( '', 'nonce' );

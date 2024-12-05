@@ -7,8 +7,8 @@
  * @Link        http://wordpress.org/plugins/quotes-llama/
  * @package     quotes-llama
  * @since       3.0.0
- * License:     Copyheart
- * License URI: http://copyheart.org
+ * License:     GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 namespace Quotes_Llama;
@@ -258,7 +258,7 @@ class QuotesLlama_Page {
 				foreach ( $initials as $quote_author ) {
 
 					// Add comma into title for echoing below.
-					if ( $quote_author['title_name'] ) {
+					if ( $quote_author['title_name'] && ( $quote_author['first'] || $quote_author['last'] ) ) {
 						$title_name = ', ' . $quote_author['title_name'];
 					} else {
 						$title_name = '';
@@ -279,10 +279,14 @@ class QuotesLlama_Page {
 									'title="' . esc_attr__( 'See all quotes from', 'quotes-llama' ) . ' ' . esc_attr( trim( $quote_author['title_name'] . ' ' . $quote_author['first'] . ' ' . $quote_author['last'] ) ) . '">';
 
 						// If first and last name, or just first.
-						if ( $quote_author['last'] ) {
+						if ( $quote_author['first'] && $quote_author['last'] ) {
 							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . ', ' . $quote_author['first'] . $title_name ) ) );
 						} else {
-							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['first'] . $title_name ) ) );
+							if ( $quote_author['last'] ) {
+								$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . $title_name ) ) );
+							} else {
+								$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['first'] . $title_name ) ) );
+							}
 						}
 
 						$author_link_list .= '</a></li>';
@@ -308,11 +312,15 @@ class QuotesLlama_Page {
 									'href="#' . esc_attr( trim( $quote_author['title_name'] . ' ' . $quote_author['first'] . ' ' . $quote_author['last'] ) ) . '" ' .
 									'title="' . esc_attr__( 'See all quotes from', 'quotes-llama' ) . ' ' . esc_attr( trim( $quote_author['title_name'] . ' ' . $quote_author['first'] . ' ' . $quote_author['last'] ) ) . '">';
 
-						// If first and last name.
-						if ( $quote_author['last'] ) {
+						// If first and last name, or just first.
+						if ( $quote_author['first'] && $quote_author['last'] ) {
 							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . ', ' . $quote_author['first'] . $title_name ) ) );
 						} else {
-							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['first'] . $title_name ) ) );
+							if ( $quote_author['last'] ) {
+								$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . $title_name ) ) );
+							} else {
+								$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['first'] . $title_name ) ) );
+							}
 						}
 
 						$author_link_list  .= '</a></li>';
