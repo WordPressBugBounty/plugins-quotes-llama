@@ -63,14 +63,14 @@ class QuotesLlama_Auto {
 				'gauthor="' . $ql->check_option( 'show_page_author' ) . '" ' .
 				'gsource="' . $ql->check_option( 'show_page_source' ) . '" ' .
 				'gimage="' . $ql->check_option( 'show_page_image' ) . '" ' .
-				'gcategory="' . $cat . '" ' .
+				'gcategory="' . esc_attr( $cat ) . '" ' .
 				'gnonce="' . $nonce . '">' .
 				'<div class="' .
 					$div_instance . '-countdown quotes-llama-auto-countdown ' .
 					$div_instance . '-reenable quotes-llama-auto-reenable"> ' .
 				'</div>' .
 				'<div class="' .
-					$div_instance . '-quotebox quotes-llama-auto-quote" gnonce="' . $nonce . '" gcategory="' . $cat . '" id="loop">
+					$div_instance . '-quotebox quotes-llama-auto-quote" gnonce="' . $nonce . '" gcategory="' . esc_attr( $cat ) . '" id="loop">
 				</div>' .
 			'</div>' .
 		'</div>';
