@@ -171,6 +171,14 @@ var quotes_llama_imageattop = quotesllamaOption.ImageAtTop;
  */
 var quotes_llama_transitionspeed = parseInt( quotesllamaOption.TransitionSpeed );
 
+/**
+ * All quotes from mysql.
+ *
+ * @since 3.1.0
+ * @var string
+ */
+var quotes_llama_quotes = quotesllamaOption.AllQuotes;
+
 // ***** Begin Admin *****
 
 /*
@@ -727,189 +735,216 @@ jQuery(
  * @param string nonce - nonce.
  */
 function quotes_llama_widget_quote( uid, tuid, cat, nonce ) {
+	let show_author;
+	let show_source;
+	let show_image;
+	show_author    = jQuery( '#' + uid ).attr( 'wauthor' );
+	show_source    = jQuery( '#' + uid ).attr( 'wsource' );
+	show_image     = jQuery( '#' + uid ).attr( 'wimage' );
+	let quote_data = [];
+	let quote_use  = [];
+	let cat_use    = [];
+	let cat_cats;
+	let cat_kits;
+	let quote_keys;
+	let quote_rand;
 
-	// .ajax post to admin-ajax.php...
-	jQuery.post(
-		quotes_llama_ajaxurl,
-		{
-			action: 'select_random',
-			quotes_llama_random: 1,
-			quotes_llama_category: cat,
-			quotes_llama_nonce: nonce
-		},
-		function ( quotes )
-		{
-			let quote_data;
-			let show_author;
-			let show_source;
-			let show_image;
+	// If by category.
+	if ( cat ) {
+		jQuery.each(
+			quotes_llama_quotes,
+			function( i, q ) {
 
-			quote_data  = jQuery.parseJSON( quotes );
-			show_author = jQuery( '#' + uid ).attr( 'wauthor' );
-			show_source = jQuery( '#' + uid ).attr( 'wsource' );
-			show_image  = jQuery( '#' + uid ).attr( 'wimage' );
+				// Split quote categories into array.
+				cat_cats = q.category.split( ',' );
 
-			// Fade out widget.
-			jQuery( '#' + uid ).stop( true, true ).fadeOut(
-				quotes_llama_transitionspeed,
-				function () {
-					let rand_quote;
-					let author_icon;
-					let source_icon;
-					let rand_title;
-					let rand_first;
-					let rand_last;
-					let rand_source;
-					let rand_img;
-					let rand_author_icon;
-					let rand_source_icon;
-					let rand_category;
-					let rand_comma;
-					let delayTime;
-					let rand_length;
+				// Split search categories.
+				cat_kits = cat.split( ',' );
 
-					rand_quote       = quotes_llama_stripslashes( quotes_llama_nl2br( quote_data.quote, false ) );
-					author_icon      = '';
-					source_icon      = '';
-					rand_title       = quotes_llama_stripslashes( quote_data.title_name ) + ' ';
-					rand_first       = quotes_llama_stripslashes( quote_data.first_name ) + ' ';
-					rand_last        = quotes_llama_stripslashes( quote_data.last_name );
-					rand_source      = quotes_llama_stripslashes( quote_data.source );
-					rand_img         = quotes_llama_stripslashes( quote_data.img_url );
-					rand_author_icon = quotes_llama_stripslashes( quote_data.author_icon );
-					rand_source_icon = quotes_llama_stripslashes( quote_data.source_icon );
-					rand_category    = quotes_llama_stripslashes( quote_data.category );
-					rand_comma       = '';
-
-					// If title is null.
-					if ( null === rand_title ) {
-						rand_title = '';
-					}
-
-					// If displaying icons in author.
-					author_icon = show_icons( rand_author_icon );
-
-					// If showing author, populate fields.
-					if ( rand_title && ( false == show_author ) ) {
-						rand_title = '';
-					}
-
-					if ( rand_first && ( false == show_author ) ) {
-						rand_first = '';
-					}
-
-					if ( rand_last && ( false == show_author ) ) {
-						rand_last = '';
-					}
-
-					// If showing both author and source, populate rand_comma.
-					if ( ( rand_first || rand_last && ( false != show_author ) ) && ( rand_source && ( false != show_source ) ) ) {
-
-						// If the options are set to put source on a new line populate a line break instead.
-						if ( quotes_llama_sourcenewline == 'br' ) {
-							rand_comma = '<br>';
-						} else {
-							rand_comma = ', ';
+				// Cat found so using quote.
+				jQuery.each(
+					cat_kits,
+					function( k, c ) {
+						if ( jQuery.inArray( c, cat_cats ) > -1 ) {
+							quote_use.push( q );
+							return;
 						}
 					}
+				);
+			}
+		);
+	} else {
+		quote_use = quotes_llama_quotes.slice();
+	}
 
-					// If showing source, populate rand_source.
-					if ( rand_source && ( false != show_source ) ) {
+	// Quote keys.
+	quote_keys = Object.keys( quote_use );
 
-						// If displaying icons in source.
-						source_icon = show_icons( rand_source_icon );
-						rand_source = '<span class="quotes-llama-widget-source">' + rand_source + '</span>';
-					} else {
-						rand_source = '';
-					}
+	// Random quote key.
+	quote_rand = quote_keys.length * Math.random();
 
-					// If showing image, populate rand_img.
-					if ( rand_img && ( false != show_image  ) ) {
-						rand_img = '<img src="' + rand_img +
-						'" title="' + rand_title + rand_first + rand_last +
-						'">';
-					} else {
-						rand_img = '';
-					}
+	// Random quote array.
+	quote_data = quote_use[quote_keys[ quote_rand << 0]];
 
-					// Length of quote with author and source.
-					rand_length = rand_quote.length + rand_first.length + rand_last.length + rand_source.length;
+	// Fade out widget.
+	jQuery( '#' + uid ).stop( true, true ).fadeOut(
+		quotes_llama_transitionspeed,
+		function () {
+			let rand_quote;
+			let author_icon;
+			let source_icon;
+			let rand_title;
+			let rand_first;
+			let rand_last;
+			let rand_source;
+			let rand_img;
+			let rand_author_icon;
+			let rand_source_icon;
+			let rand_category;
+			let rand_comma;
+			let delayTime;
+			let rand_length;
 
-					// Delay from length rounded. If less than minimum set in options then set to minimum.
-					delayTime = parseInt( rand_length / quotes_llama_galleryinterval );
+			rand_quote       = quotes_llama_stripslashes( quotes_llama_nl2br( quote_data.quote, false ) );
+			author_icon      = '';
+			source_icon      = '';
+			rand_title       = quotes_llama_stripslashes( quote_data.title_name ) + ' ';
+			rand_first       = quotes_llama_stripslashes( quote_data.first_name ) + ' ';
+			rand_last        = quotes_llama_stripslashes( quote_data.last_name );
+			rand_source      = quotes_llama_stripslashes( quote_data.source );
+			rand_img         = quotes_llama_stripslashes( quote_data.img_url );
+			rand_author_icon = quotes_llama_stripslashes( quote_data.author_icon );
+			rand_source_icon = quotes_llama_stripslashes( quote_data.source_icon );
+			rand_category    = quotes_llama_stripslashes( quote_data.category );
+			rand_comma       = '';
 
-					if ( delayTime < quotes_llama_galleryminimum ) {
-						delayTime = quotes_llama_galleryminimum;
-					}
+			// If title is null.
+			if ( null === rand_title ) {
+				rand_title = '';
+			}
 
-					// Set new timer interval.
-					jQuery(
-						'.quotes-llama-' + uid + '-countdown'
-					).quotes_llama_countdown(
-						delayTime,
-						'widget',
-						uid
-					);
+			// If displaying icons in author.
+			author_icon = show_icons( rand_author_icon );
 
-					// Stop quote.
-					quotes_llama_stoptimer( tuid );
+			// If showing author, populate fields.
+			if ( rand_title && ( false == show_author ) ) {
+				rand_title = '';
+			}
 
-					// Schedule the next quote.
-					tuid = setInterval(
-						function () {
-							quotes_llama_widget_quote( uid, tuid, cat, nonce );
-						},
-						delayTime * 1000
-					);
+			if ( rand_first && ( false == show_author ) ) {
+				rand_first = '';
+			}
 
-					// Render the widget to the display.
-					jQuery(
-						'#' + uid
-					).html(
-						'<div class="quotes-llama-widget-quote">' +
-						'<span class="quotes-llama-' + uid + '-countdown quotes-llama-widget-countdown"></span> ' +
-						rand_img + '<span class="quotes-llama-' + uid + '-more">' + rand_quote + '</span>' +
-						'<span class="quotes-llama-widget-author">' +
-						author_icon.trim() + rand_title + rand_first + rand_last + rand_comma +
-						'<span class="quotes-llama-widget-source">' + source_icon + rand_source + '</span>' +
-						'</span></div>'
-					);
+			if ( rand_last && ( false == show_author ) ) {
+				rand_last = '';
+			}
 
-					// Reformat quote if having character limit.
-					if ( quotes_llama_quotelimit > 0 ) {
-						quotes_llama_limit_format( '.quotes-llama-' + uid + '-more', uid );
-						quotes_llama_limit_more( '.quotes-llama-' + uid + '-morelink' );
+			// If showing both author and source, populate rand_comma.
+			if ( ( rand_first || rand_last && ( false != show_author ) ) && ( rand_source && ( false != show_source ) ) ) {
 
-						// Hide the extra text as element is created after styles.
-						jQuery(
-							'.quotes-llama-' + uid + '-morelink'
-						).prev().css(
-							'display',
-							'none'
-						);
-					}
-
-					// Make images round rather than rectangle, if settings allow.
-					if ( quotes_llama_borderradius ) {
-						jQuery( '.quotes-llama-widget-gallery img, .quotes-llama-widget-random img' ).css( 'border-radius', '50%' );
-					}
-
-					// Make images display above the quote, if settings allow.
-					if ( quotes_llama_imageattop ) {
-						jQuery( '.quotes-llama-widget-gallery img, .quotes-llama-widget-random img' ).css( quotes_llama_css_image_at_top() );
-					}
-
-					// Align quote and format icons.
-					jQuery( '.quotes-llama-widget-gallery, .quotes-llama-widget-random' ).css( quotes_llama_css_align_quote() );
-					jQuery( '.quotes-llama-icons img' ).css( quotes_llama_css_icons_reformat() );
-
-					// Fade in quotebox.
-					jQuery( '#' + uid ).fadeIn( quotes_llama_transitionspeed );
+				// If the options are set to put source on a new line populate a line break instead.
+				if ( quotes_llama_sourcenewline == 'br' ) {
+					rand_comma = '<br>';
+				} else {
+					rand_comma = ', ';
 				}
+			}
+
+			// If showing source, populate rand_source.
+			if ( rand_source && ( false != show_source ) ) {
+
+				// If displaying icons in source.
+				source_icon = show_icons( rand_source_icon );
+				rand_source = '<span class="quotes-llama-widget-source">' + rand_source + '</span>';
+			} else {
+				rand_source = '';
+			}
+
+			// If showing image, populate rand_img.
+			if ( rand_img && ( false != show_image  ) ) {
+				rand_img = '<img src="' + rand_img +
+				'" title="' + rand_title + rand_first + rand_last +
+				'">';
+			} else {
+				rand_img = '';
+			}
+
+			// Length of quote with author and source.
+			rand_length = rand_quote.length + rand_first.length + rand_last.length + rand_source.length;
+
+			// Delay from length rounded. If less than minimum set in options then set to minimum.
+			delayTime = parseInt( rand_length / quotes_llama_galleryinterval );
+
+			if ( delayTime < quotes_llama_galleryminimum ) {
+				delayTime = quotes_llama_galleryminimum;
+			}
+
+			// Set new timer interval.
+			jQuery(
+				'.quotes-llama-' + uid + '-countdown'
+			).quotes_llama_countdown(
+				delayTime,
+				'widget',
+				uid
 			);
+
+			// Stop quote.
+			quotes_llama_stoptimer( tuid );
+
+			// Schedule the next quote.
+			tuid = setInterval(
+				function () {
+					quotes_llama_widget_quote( uid, tuid, cat, nonce );
+				},
+				delayTime * 1000
+			);
+
+			// Render the widget to the display.
+			jQuery(
+				'#' + uid
+			).html(
+				'<div class="quotes-llama-widget-quote">' +
+				'<span class="quotes-llama-' + uid + '-countdown quotes-llama-widget-countdown"></span> ' +
+				rand_img + '<span class="quotes-llama-' + uid + '-more">' + rand_quote + '</span>' +
+				'<span class="quotes-llama-widget-author">' +
+				author_icon.trim() + rand_title + rand_first + rand_last + rand_comma +
+				'<span class="quotes-llama-widget-source">' + source_icon + rand_source + '</span>' +
+				'</span></div>'
+			);
+
+			// Reformat quote if having character limit.
+			if ( quotes_llama_quotelimit > 0 ) {
+				quotes_llama_limit_format( '.quotes-llama-' + uid + '-more', uid );
+				quotes_llama_limit_more( '.quotes-llama-' + uid + '-morelink' );
+
+				// Hide the extra text as element is created after styles.
+				jQuery(
+					'.quotes-llama-' + uid + '-morelink'
+				).prev().css(
+					'display',
+					'none'
+				);
+			}
+
+			// Make images round rather than rectangle, if settings allow.
+			if ( quotes_llama_borderradius ) {
+				jQuery( '.quotes-llama-widget-gallery img, .quotes-llama-widget-random img' ).css( 'border-radius', '50%' );
+			}
+
+			// Make images display above the quote, if settings allow.
+			if ( quotes_llama_imageattop ) {
+				jQuery( '.quotes-llama-widget-gallery img, .quotes-llama-widget-random img' ).css( quotes_llama_css_image_at_top() );
+			}
+
+			// Align quote and format icons.
+			jQuery( '.quotes-llama-widget-gallery, .quotes-llama-widget-random' ).css( quotes_llama_css_align_quote() );
+			jQuery( '.quotes-llama-icons img' ).css( quotes_llama_css_icons_reformat() );
+
+			// Fade in quotebox.
+			jQuery( '#' + uid ).fadeIn( quotes_llama_transitionspeed );
 		}
 	);
-};
+}
 
 // ***** End Widget *****
 // ***** Begin Page *****
@@ -1602,245 +1637,275 @@ function quotes_llama_limit_more( s ) {
  * @param string nonce  - nonce.
  */
 function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
-	jQuery.post(
-		quotes_llama_ajaxurl,
-		{
-			action: 'select_random',
-			quotes_llama_random: 1,
-			quotes_llama_category: cat,
-			quotes_llama_nonce: nonce
-		},
-		function ( quotes )
-		{
-			let quote_data;
-			quote_data = jQuery.parseJSON( quotes );
+	let quote_data = [];
+	let quote_use  = [];
+	let cat_use    = [];
+	let cat_cats;
+	let cat_kits;
+	let quote_keys;
+	let quote_rand;
 
-			// Check that we have quote data.
-			if ( quote_data.quote ) {
-				let show_author;
-				let show_source;
-				let show_image;
-				let gcategory;
+	// If by category.
+	if ( cat ) {
+		jQuery.each(
+			quotes_llama_quotes,
+			function( i, q ) {
 
-				// Are we going to display the Author.
-				show_author = jQuery( '.' + uid ).attr( 'gauthor' );
+				// Split quote categories into array.
+				cat_cats = q.category.split( ',' );
 
-				// Are we going to display the source.
-				show_source = jQuery( '.' + uid ).attr( 'gsource' );
+				// Split search categories.
+				cat_kits = cat.split( ',' );
 
-				// Are we going to display the image.
-				show_image = jQuery( '.' + uid ).attr( 'gimage' );
-
-				// Category name.
-				gcategory = jQuery( '.' + uid ).attr( 'gcategory' );
-
-				jQuery(
-					'.' + uid + '-quotebox'
-				).stop(
-					true,
-					true
-				).fadeTo(
-					quotes_llama_transitionspeed,
-					0,
-					function()
-					{
-						let rand_quote;
-						let author_icon;
-						let source_icon;
-						let rand_title;
-						let rand_first;
-						let rand_last;
-						let rand_source;
-						let rand_img;
-						let rand_author_icon;
-						let rand_source_icon;
-						let rand_comma;
-						let suid;
-
-						rand_quote       = quotes_llama_stripslashes( quotes_llama_nl2br( quote_data.quote, false ) );
-						author_icon      = '';
-						source_icon      = '';
-						rand_title       = quotes_llama_stripslashes( quote_data.title_name ) + ' '; // Add space so it will be trimmed if title not included.
-						rand_first       = quotes_llama_stripslashes( quote_data.first_name ) + ' ';
-						rand_last        = quotes_llama_stripslashes( quote_data.last_name );
-						rand_source      = quotes_llama_stripslashes( quote_data.source );
-						rand_img         = quotes_llama_stripslashes( quote_data.img_url );
-						rand_author_icon = quotes_llama_stripslashes( quote_data.author_icon );
-						rand_source_icon = quotes_llama_stripslashes( quote_data.source_icon );
-						rand_comma       = '';
-						suid             = 0;
-
-						// If title is null.
-						if ( null === rand_title ) {
-							rand_title = '';
+				// Cat found so using quote.
+				jQuery.each(
+					cat_kits,
+					function( k, c ) {
+						if ( jQuery.inArray( c, cat_cats ) > -1 ) {
+							quote_use.push( q );
+							return;
 						}
-
-						// If displaying authors.
-						if ( (rand_first || rand_last) && show_author ) {
-
-							// If displaying icons in author.
-							author_icon = show_icons( rand_author_icon );
-						}
-
-						// If not showing author, empty strings.
-						if ( rand_title && ( false == show_author ) ) {
-							rand_title = '';
-						}
-
-						if ( rand_first && ( false == show_author ) ) {
-							rand_first = '';
-						}
-
-						if ( rand_last && ( false == show_author ) ) {
-							rand_last = '';
-						}
-
-						// If showing both author and source, will we use a comma or break.
-						if ( ( rand_first || rand_last && ( false != show_author ) ) && ( rand_source && ( false != show_source ) ) ) {
-
-							// If the options are set to put source on a new line populate a line break instead of comma.
-							if ( quotes_llama_sourcenewline == 'br' ) {
-								rand_comma = '<br>';
-							} else {
-								rand_comma = ', ';
-							}
-						}
-
-						// If showing source, populate rand_source.
-						if ( rand_source && ( false != show_source ) ) {
-
-							// If using comma to separate author/source, omit source icon.
-							if ( '<br>' === rand_comma ) {
-								source_icon = show_icons( rand_source_icon );
-							}
-								rand_source = '<span class="quotes-llama-' + mode + '-source">' + rand_source + '</span>';
-						} else {
-							rand_source = '';
-						}
-
-						// If showing author with no first or last name, omit title, icon and separator.
-						if ( ' ' === rand_first && ! rand_last ) {
-							rand_title  = '';
-							author_icon = '';
-							rand_comma  = '';
-							source_icon = show_icons( rand_source_icon );
-							rand_source = '<span class="quotes-llama-' + mode + '-source">' + rand_source + '</span>';
-						}
-
-						// Trim completed name.
-						let fin_name  = rand_title + rand_first + rand_last;
-						let rand_name = fin_name.trim();
-
-						// If showing image, populate rand_img.
-						if ( rand_img && ( false != show_image  ) ) {
-							rand_img = '<img src="' + rand_img +
-							'" title="' + rand_name +
-							'">';
-						} else {
-							rand_img = '';
-						}
-
-						// If gallery is to loop its quotes.
-						if ( loop ) {
-							let rand_length;
-							let delayTime;
-
-							// Length of quote with author and source.
-							rand_length = rand_quote.length + rand_title.length + rand_name.length + rand_source.length;
-
-							// Delay from length rounded.
-							delayTime = parseInt( rand_length / quotes_llama_galleryinterval );
-
-							if ( delayTime < quotes_llama_galleryminimum ) {
-								delayTime = quotes_llama_galleryminimum;
-							}
-
-							// Create new seconds timer if gallery.
-							if ( mode == 'gallery' ) {
-								suid = jQuery( '.' + uid + '-countdown' ).quotes_llama_countdown( delayTime, 'gallery', uid );
-							}
-
-							// Create new seconds timer if auto.
-							if ( mode == 'auto' ) {
-								suid = jQuery( '.' + uid + '-countdown' ).quotes_llama_countdown( delayTime, 'auto', uid );
-							}
-
-							// Stop quote timer. Set quote timer to fire a new quote in so many seconds from now.
-							quotes_llama_stoptimer( tuid );
-							tuid = setInterval(
-								function () {
-									quotes_llama_quote(
-										mode,
-										true,
-										uid,
-										tuid,
-										gcategory,
-										nonce
-									);
-								},
-								delayTime * 1000
-							);
-						}
-
-						// Mode being gallery or auto... Render to the div.
-						jQuery(
-							'.' + uid + '-quotebox'
-						).html(
-							"<div class='quotes-llama-" + mode + "-quote' onClick='quotes_llama_manualnext(\"" + uid + "\", " + tuid + ", " + suid + ", \"" + mode + "\", \"" + gcategory + "\", \"" + nonce + "\");'>" + rand_img +
-							"<div class='quotes-llama-" + mode + "-quote quotes-llama-" + uid + "-more'>" + rand_quote +
-							" <span class='quotes-llama-" + mode + "-author'>" +
-							author_icon.trim() + rand_name + rand_comma +
-							"<span class='quotes-llama-" + mode + "-source'>" + source_icon + rand_source + "</span>" +
-							"</span></div></div>"
-						);
-
-						// Reformat quote if having character limit.
-						if ( quotes_llama_quotelimit > 0 ) {
-							quotes_llama_limit_format(
-								'.quotes-llama-' + uid + '-more',
-								uid
-							);
-
-							quotes_llama_limit_more(
-								'.quotes-llama-' + uid + '-morelink'
-							);
-
-							// Hide the extra text as element is created after styles.
-							jQuery(
-								'.quotes-llama-' + uid + '-morelink'
-							).prev().css(
-								'display',
-								'none'
-							);
-						}
-
-						// Make images round rather than rectangle, if settings allow.
-						if ( quotes_llama_borderradius ) {
-							jQuery( '.quotes-llama-gallery img, .quotes-llama-auto img' ).css( 'border-radius', '50%' );
-						}
-
-						// Make images display above the quote, if settings allow.
-						if ( quotes_llama_imageattop ) {
-							jQuery( '.quotes-llama-gallery img, .quotes-llama-auto img' ).css( quotes_llama_css_image_at_top() );
-						}
-
-						// Align quote and format icons.
-						jQuery( '.quotes-llama-gallery, .quotes-llama-auto-quote' ).css( quotes_llama_css_align_quote() );
-						jQuery( '.quotes-llama-icons img' ).css( quotes_llama_css_icons_reformat() );
-
-						// Move to new random location if gallery mode.
-						if ( mode == 'gallery' ) {
-							quotes_llama_move( uid + '-quotebox', uid );
-						}
-
-						// Fade in quotebox.
-						jQuery( '.' + uid + '-quotebox' ).fadeTo( quotes_llama_transitionspeed, 1 );
 					}
 				);
 			}
-		}
-	);
-};
+		);
+	} else {
+		quote_use = quotes_llama_quotes.slice();
+	}
+
+	// Quote keys.
+	quote_keys = Object.keys( quote_use );
+
+	// Random quote key.
+	quote_rand = quote_keys.length * Math.random();
+
+	// Random quote array.
+	quote_data = quote_use[quote_keys[ quote_rand << 0]];
+
+	// Check that we have quote data.
+	if ( quote_data.quote ) {
+		let show_author;
+		let show_source;
+		let show_image;
+		let gcategory;
+
+		// Are we going to display the Author.
+		show_author = jQuery( '.' + uid ).attr( 'gauthor' );
+
+		// Are we going to display the source.
+		show_source = jQuery( '.' + uid ).attr( 'gsource' );
+
+		// Are we going to display the image.
+		show_image = jQuery( '.' + uid ).attr( 'gimage' );
+
+		// Category name.
+		gcategory = jQuery( '.' + uid ).attr( 'gcategory' );
+
+		jQuery(
+			'.' + uid + '-quotebox'
+		).stop(
+			true,
+			true
+		).fadeTo(
+			quotes_llama_transitionspeed,
+			0,
+			function()
+			{
+				let rand_quote;
+				let author_icon;
+				let source_icon;
+				let rand_title;
+				let rand_first;
+				let rand_last;
+				let rand_source;
+				let rand_img;
+				let rand_author_icon;
+				let rand_source_icon;
+				let rand_comma;
+				let suid;
+
+				rand_quote       = quotes_llama_stripslashes( quotes_llama_nl2br( quote_data.quote, false ) );
+				author_icon      = '';
+				source_icon      = '';
+				rand_title       = quotes_llama_stripslashes( quote_data.title_name ) + ' '; // Add space so it will be trimmed if title not included.
+				rand_first       = quotes_llama_stripslashes( quote_data.first_name ) + ' ';
+				rand_last        = quotes_llama_stripslashes( quote_data.last_name );
+				rand_source      = quotes_llama_stripslashes( quote_data.source );
+				rand_img         = quotes_llama_stripslashes( quote_data.img_url );
+				rand_author_icon = quotes_llama_stripslashes( quote_data.author_icon );
+				rand_source_icon = quotes_llama_stripslashes( quote_data.source_icon );
+				rand_comma       = '';
+				suid             = 0;
+
+				// If title is null.
+				if ( null === rand_title ) {
+					rand_title = '';
+				}
+
+				// If displaying authors.
+				if ( (rand_first || rand_last) && show_author ) {
+
+					// If displaying icons in author.
+					author_icon = show_icons( rand_author_icon );
+				}
+
+				// If not showing author, empty strings.
+				if ( rand_title && ( false == show_author ) ) {
+					rand_title = '';
+				}
+
+				if ( rand_first && ( false == show_author ) ) {
+					rand_first = '';
+				}
+
+				if ( rand_last && ( false == show_author ) ) {
+					rand_last = '';
+				}
+
+				// If showing both author and source, will we use a comma or break.
+				if ( ( rand_first || rand_last && ( false != show_author ) ) && ( rand_source && ( false != show_source ) ) ) {
+
+					// If the options are set to put source on a new line populate a line break instead of comma.
+					if ( quotes_llama_sourcenewline == 'br' ) {
+						rand_comma = '<br>';
+					} else {
+						rand_comma = ', ';
+					}
+				}
+
+				// If showing source, populate rand_source.
+				if ( rand_source && ( false != show_source ) ) {
+
+					// If using comma to separate author/source, omit source icon.
+					if ( '<br>' === rand_comma ) {
+						source_icon = show_icons( rand_source_icon );
+					}
+						rand_source = '<span class="quotes-llama-' + mode + '-source">' + rand_source + '</span>';
+				} else {
+					rand_source = '';
+				}
+
+				// If showing author with no first or last name, omit title, icon and separator.
+				if ( ' ' === rand_first && ! rand_last ) {
+					rand_title  = '';
+					author_icon = '';
+					rand_comma  = '';
+					source_icon = show_icons( rand_source_icon );
+					rand_source = '<span class="quotes-llama-' + mode + '-source">' + rand_source + '</span>';
+				}
+
+				// Trim completed name.
+				let fin_name  = rand_title + rand_first + rand_last;
+				let rand_name = fin_name.trim();
+
+				// If showing image, populate rand_img.
+				if ( rand_img && ( false != show_image  ) ) {
+					rand_img = '<img src="' + rand_img +
+					'" title="' + rand_name +
+					'">';
+				} else {
+					rand_img = '';
+				}
+
+				// If gallery is to loop its quotes.
+				if ( loop ) {
+					let rand_length;
+					let delayTime;
+
+					// Length of quote with author and source.
+					rand_length = rand_quote.length + rand_title.length + rand_name.length + rand_source.length;
+
+					// Delay from length rounded.
+					delayTime = parseInt( rand_length / quotes_llama_galleryinterval );
+
+					if ( delayTime < quotes_llama_galleryminimum ) {
+						delayTime = quotes_llama_galleryminimum;
+					}
+
+					// Create new seconds timer if gallery.
+					if ( mode == 'gallery' ) {
+						suid = jQuery( '.' + uid + '-countdown' ).quotes_llama_countdown( delayTime, 'gallery', uid );
+					}
+
+					// Create new seconds timer if auto.
+					if ( mode == 'auto' ) {
+						suid = jQuery( '.' + uid + '-countdown' ).quotes_llama_countdown( delayTime, 'auto', uid );
+					}
+
+					// Stop quote timer. Set quote timer to fire a new quote in so many seconds from now.
+					quotes_llama_stoptimer( tuid );
+					tuid = setInterval(
+						function () {
+							quotes_llama_quote(
+								mode,
+								true,
+								uid,
+								tuid,
+								gcategory,
+								nonce
+							);
+						},
+						delayTime * 1000
+					);
+				}
+
+				// Mode being gallery or auto... Render to the div.
+				jQuery(
+					'.' + uid + '-quotebox'
+				).html(
+					"<div class='quotes-llama-" + mode + "-quote' onClick='quotes_llama_manualnext(\"" + uid + "\", " + tuid + ", " + suid + ", \"" + mode + "\", \"" + gcategory + "\", \"" + nonce + "\");'>" + rand_img +
+					"<div class='quotes-llama-" + mode + "-quote quotes-llama-" + uid + "-more'>" + rand_quote +
+					" <span class='quotes-llama-" + mode + "-author'>" +
+					author_icon.trim() + rand_name + rand_comma +
+					"<span class='quotes-llama-" + mode + "-source'>" + source_icon + rand_source + "</span>" +
+					"</span></div></div>"
+				);
+
+				// Reformat quote if having character limit.
+				if ( quotes_llama_quotelimit > 0 ) {
+					quotes_llama_limit_format(
+						'.quotes-llama-' + uid + '-more',
+						uid
+					);
+
+					quotes_llama_limit_more(
+						'.quotes-llama-' + uid + '-morelink'
+					);
+
+					// Hide the extra text as element is created after styles.
+					jQuery(
+						'.quotes-llama-' + uid + '-morelink'
+					).prev().css(
+						'display',
+						'none'
+					);
+				}
+
+				// Make images round rather than rectangle, if settings allow.
+				if ( quotes_llama_borderradius ) {
+					jQuery( '.quotes-llama-gallery img, .quotes-llama-auto img' ).css( 'border-radius', '50%' );
+				}
+
+				// Make images display above the quote, if settings allow.
+				if ( quotes_llama_imageattop ) {
+					jQuery( '.quotes-llama-gallery img, .quotes-llama-auto img' ).css( quotes_llama_css_image_at_top() );
+				}
+
+				// Align quote and format icons.
+				jQuery( '.quotes-llama-gallery, .quotes-llama-auto-quote' ).css( quotes_llama_css_align_quote() );
+				jQuery( '.quotes-llama-icons img' ).css( quotes_llama_css_icons_reformat() );
+
+				// Move to new random location if gallery mode.
+				if ( mode == 'gallery' ) {
+					quotes_llama_move( uid + '-quotebox', uid );
+				}
+
+				// Fade in quotebox.
+				jQuery( '.' + uid + '-quotebox' ).fadeTo( quotes_llama_transitionspeed, 1 );
+			}
+		);
+	}
+}
 
 // ***** End Gallery-Auto-Widget *****
 // ***** Begin Formats *****

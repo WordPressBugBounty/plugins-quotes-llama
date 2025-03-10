@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Quotes llama
  * Plugin URI:  https://oooorgle.com/plugins/wp/quotes-llama/
- * Version:     3.0.2
+ * Version:     3.1.0
  * Description: Share the thoughts that mean the most... display your quotes in blocks, widgets, pages, templates, galleries or posts.
  * Author:      oooorgle
  * Author URI:  https://oooorgle.com/plugins/wp/quotes-llama/
@@ -26,7 +26,7 @@ defined( 'QL_URL' ) || define( 'QL_URL', plugin_dir_url( __FILE__ ) );
 defined( 'QL_PATH' ) || define( 'QL_PATH', plugin_dir_path( __FILE__ ) );
 
 // Plugin versions.
-defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.0.2' );
+defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.0' );
 defined( 'QL_DB_VERSION' ) || define( 'QL_DB_VERSION', '2.0.1' );
 
 /**
@@ -1483,7 +1483,10 @@ class QuotesLlama {
 				'BorderRadius'     => isset( $this->plugin_options['border_radius'] ) ? $this->plugin_options['border_radius'] : false,
 				'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
 				'AlignQuote'       => isset( $this->plugin_options['align_quote'] ) ? $this->plugin_options['align_quote'] : 'left',
+				'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
+				'ThisDIR'          => $this->icons_dir,
 				'ThisURL'          => $this->icons_url,
+				'AllQuotes'        => $this->select_all(),
 			)
 		);
 
@@ -1526,6 +1529,23 @@ class QuotesLlama {
 
 		// Dash-icons css.
 		wp_enqueue_style( 'quotesllamaDashIcons', QL_URL . 'includes/css/dash-icons.css', array(), $this->plugin_version() );
+	}
+
+	/**
+	 * All quotes.
+	 *
+	 * @since 3.1.0
+	 * @access public
+	 */
+	public function select_all() {
+		global $wpdb;
+		$quotes = $wpdb->get_results( // phpcs:ignore
+			'SELECT * FROM ' .
+			$wpdb->prefix .
+			'quotes_llama',
+			ARRAY_A
+		);
+		return $quotes;
 	}
 
 	/**
@@ -1777,7 +1797,7 @@ class QuotesLlama {
 	 * @since 1.0.0
 	 * @access private
 	 *
-	 * @param mixed $quote_id - Should be 'categories'.
+	 * @param mixed $quote_id - Should be categories.
 	 *
 	 * @return result array.
 	 */
@@ -2191,6 +2211,8 @@ class QuotesLlama {
 	 * @access public
 	 */
 	public function shortcode_add() {
+
+		// Set quotes-llama to base short-code.
 		add_shortcode( 'quotes-llama', array( $this, 'shortcodes' ) );
 	}
 

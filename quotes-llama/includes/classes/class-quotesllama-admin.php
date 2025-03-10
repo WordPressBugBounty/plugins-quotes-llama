@@ -2150,10 +2150,10 @@ class QuotesLlama_Admin {
 						<?php esc_html_e( 'Translate This Plugin', 'quotes-llama' ); ?>
 					</a>
 					<br>
-					<a href='https://oooorgle.com/copyheart/'
+					<a href='https://www.gnu.org/licenses/gpl-3.0.en.html'
 						target='_blank'
-						title='<?php esc_attr_e( 'CopyHeart', 'quotes-llama' ); ?>'>
-						<?php esc_html_e( 'License: CopyHeart', 'quotes-llama' ); ?>
+						title='<?php esc_attr_e( 'GPLv3', 'quotes-llama' ); ?>'>
+						<?php esc_html_e( 'License: GPLv3', 'quotes-llama' ); ?>
 					</a>
 					<br>
 					<a href="https://oooorgle.com/plugins/wp/quotes-llama/"

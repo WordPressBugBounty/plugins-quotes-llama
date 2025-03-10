@@ -140,6 +140,7 @@ class QuotesLlama_Backup {
 	 * Get data for .json and create the file.
 	 *
 	 * @param string $nonce - nonce.
+	 * @param bool   $file  - To create quote file.
 	 *
 	 * @since 1.0.0
 	 * @access public
