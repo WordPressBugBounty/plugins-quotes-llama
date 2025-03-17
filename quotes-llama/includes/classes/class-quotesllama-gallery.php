@@ -61,7 +61,7 @@ class QuotesLlama_Gallery {
 				'gauthor="' . $ql->check_option( 'show_gallery_author' ) . '" ' .
 				'gsource="' . $ql->check_option( 'show_gallery_source' ) . '" ' .
 				'gimage="' . $ql->check_option( 'show_gallery_image' ) . '" ' .
-				'gcategory="' . $cat . '" ' .
+				'gcategory="' . esc_attr( $cat ) . '" ' .
 				'gnonce="' . $nonce . '">' .
 				'<div class="quotes-llama-gallery-rotate ' . $div_instance . '-quotes-llama-gallery-rotate">' .
 					'<div class="' .
@@ -70,7 +70,7 @@ class QuotesLlama_Gallery {
 					'</div>' .
 					'<div class="' .
 						$div_instance . '-quotebox quotes-llama-gallery-quotebox"' .
-						' gcategory="' . $cat . '" gnonce="' . $nonce . '" id="loop">
+						' gcategory="' . esc_attr( $cat ) . '" gnonce="' . $nonce . '" id="loop">
 					</div>' .
 				'</div>' .
 			'</div>' .
