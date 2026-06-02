@@ -185,9 +185,9 @@ class QuotesLlama_Page {
 			if ( $quotesresult ) {
 				foreach ( $quotesresult as $quoteresult ) {
 					$countofquote = $quoteresult->quotecount; // Total number of quotes.
-					$title_name   = trim( $quoteresult->title_name ); // Title.
-					$first_name   = trim( $quoteresult->first_name ); // First and middle name.
-					$last_name    = trim( $quoteresult->last_name ); // Last name.
+					$title_name   = trim( $quoteresult->title_name ?? '' ); // Title.
+					$first_name   = trim( $quoteresult->first_name ?? '' ); // First and middle name.
+					$last_name    = trim( $quoteresult->last_name ?? '' ); // Last name.
 					$name_shift   = false; // If just first name.
 
 					if ( $last_name ) { // Does this author have last name.

@@ -3,8 +3,8 @@ Contributors: oooorgle
 Donate link: http://oooorgle.com/plugins/wp/quotes-llama/
 Tags: Quote, Think, Share
 Requires at least: 4.2.2
-Tested up to: 6.8.2
-Stable tag: 3.1.1
+Tested up to: 7.0
+Stable tag: 3.1.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 

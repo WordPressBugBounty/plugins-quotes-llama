@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Quotes llama
  * Plugin URI:  https://oooorgle.com/plugins/wp/quotes-llama/
- * Version:     3.1.1
+ * Version:     3.1.3
  * Description: Share the thoughts that mean the most... display your quotes in blocks, widgets, pages, templates, galleries or posts.
  * Author:      oooorgle
  * Author URI:  https://oooorgle.com/plugins/wp/quotes-llama/
@@ -26,7 +26,7 @@ defined( 'QL_URL' ) || define( 'QL_URL', plugin_dir_url( __FILE__ ) );
 defined( 'QL_PATH' ) || define( 'QL_PATH', plugin_dir_path( __FILE__ ) );
 
 // Plugin versions.
-defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.1' );
+defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.3' );
 defined( 'QL_DB_VERSION' ) || define( 'QL_DB_VERSION', '2.0.1' );
 
 /**
@@ -1459,35 +1459,44 @@ class QuotesLlama {
 	 */
 	public function scripts_localize() {
 
+		// Array of JS vars.
+		$ql_vars = array(
+			'ajaxurl'          => admin_url( 'admin-ajax.php' ),
+			'BackgroundColor'  => isset( $this->plugin_options['background_color'] ) ? $this->plugin_options['background_color'] : '#444',
+			'ForegroundColor'  => isset( $this->plugin_options['foreground_color'] ) ? $this->plugin_options['foreground_color'] : 'silver',
+			'GalleryInterval'  => isset( $this->plugin_options['gallery_timer_interval'] ) ? $this->plugin_options['gallery_timer_interval'] : 12,
+			'TransitionSpeed'  => isset( $this->plugin_options['transition_speed'] ) ? $this->plugin_options['transition_speed'] : 1000,
+			'GalleryMinimum'   => isset( $this->plugin_options['gallery_timer_minimum'] ) ? $this->plugin_options['gallery_timer_minimum'] : 10,
+			'GalleryShowTimer' => isset( $this->plugin_options['gallery_timer_show'] ) ? $this->plugin_options['gallery_timer_show'] : false,
+			'Sidebarpos'       => isset( $this->plugin_options['sidebar'] ) ? $this->plugin_options['sidebar'] : 'left',
+			'Limit'            => isset( $this->plugin_options['character_limit'] ) ? $this->plugin_options['character_limit'] : 0,
+			'Ellipses'         => isset( $this->plugin_options['ellipses_text'] ) ? $this->plugin_options['ellipses_text'] : '...',
+			'SourceNewLine'    => isset( $this->plugin_options['source_newline'] ) ? $this->plugin_options['source_newline'] : 'br',
+			'MoreText'         => isset( $this->plugin_options['read_more_text'] ) ? $this->plugin_options['read_more_text'] : '&raquo;',
+			'ShowIcons'        => isset( $this->plugin_options['show_icons'] ) ? $this->plugin_options['show_icons'] : false,
+			'AuthorIcon'       => isset( $this->plugin_options['author_icon'] ) ? $this->plugin_options['author_icon'] : 'edit',
+			'SourceIcon'       => isset( $this->plugin_options['source_icon'] ) ? $this->plugin_options['source_icon'] : 'migrate',
+			'LessText'         => isset( $this->plugin_options['read_less_text'] ) ? $this->plugin_options['read_less_text'] : '&laquo;',
+			'BorderRadius'     => isset( $this->plugin_options['border_radius'] ) ? $this->plugin_options['border_radius'] : false,
+			'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
+			'AlignQuote'       => isset( $this->plugin_options['align_quote'] ) ? $this->plugin_options['align_quote'] : 'left',
+			'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
+			'ThisDIR'          => $this->icons_dir,
+			'ThisURL'          => $this->icons_url
+		);
+
+		// We should only assign our quote data if plugin is being called.
+		if ( shortcode_exists( 'quotes-llama' ) ) {
+			
+			// Add quotes to JS vars. This creates some load on server if a lot of quotes.
+			$ql_vars['AllQuotes'] = $this->select_all();	
+		}
+
 		// Javascript variable arrays quotesllamaOption and quotesllamaAjax, Front-end.
 		wp_localize_script(
 			'quotesllamaAjax',
 			'quotesllamaOption',
-			array(
-				'ajaxurl'          => admin_url( 'admin-ajax.php' ),
-				'BackgroundColor'  => isset( $this->plugin_options['background_color'] ) ? $this->plugin_options['background_color'] : '#444',
-				'ForegroundColor'  => isset( $this->plugin_options['foreground_color'] ) ? $this->plugin_options['foreground_color'] : 'silver',
-				'GalleryInterval'  => isset( $this->plugin_options['gallery_timer_interval'] ) ? $this->plugin_options['gallery_timer_interval'] : 12,
-				'TransitionSpeed'  => isset( $this->plugin_options['transition_speed'] ) ? $this->plugin_options['transition_speed'] : 1000,
-				'GalleryMinimum'   => isset( $this->plugin_options['gallery_timer_minimum'] ) ? $this->plugin_options['gallery_timer_minimum'] : 10,
-				'GalleryShowTimer' => isset( $this->plugin_options['gallery_timer_show'] ) ? $this->plugin_options['gallery_timer_show'] : false,
-				'Sidebarpos'       => isset( $this->plugin_options['sidebar'] ) ? $this->plugin_options['sidebar'] : 'left',
-				'Limit'            => isset( $this->plugin_options['character_limit'] ) ? $this->plugin_options['character_limit'] : 0,
-				'Ellipses'         => isset( $this->plugin_options['ellipses_text'] ) ? $this->plugin_options['ellipses_text'] : '...',
-				'SourceNewLine'    => isset( $this->plugin_options['source_newline'] ) ? $this->plugin_options['source_newline'] : 'br',
-				'MoreText'         => isset( $this->plugin_options['read_more_text'] ) ? $this->plugin_options['read_more_text'] : '&raquo;',
-				'ShowIcons'        => isset( $this->plugin_options['show_icons'] ) ? $this->plugin_options['show_icons'] : false,
-				'AuthorIcon'       => isset( $this->plugin_options['author_icon'] ) ? $this->plugin_options['author_icon'] : 'edit',
-				'SourceIcon'       => isset( $this->plugin_options['source_icon'] ) ? $this->plugin_options['source_icon'] : 'migrate',
-				'LessText'         => isset( $this->plugin_options['read_less_text'] ) ? $this->plugin_options['read_less_text'] : '&laquo;',
-				'BorderRadius'     => isset( $this->plugin_options['border_radius'] ) ? $this->plugin_options['border_radius'] : false,
-				'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
-				'AlignQuote'       => isset( $this->plugin_options['align_quote'] ) ? $this->plugin_options['align_quote'] : 'left',
-				'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
-				'ThisDIR'          => $this->icons_dir,
-				'ThisURL'          => $this->icons_url,
-				'AllQuotes'        => $this->select_all(),
-			)
+			$ql_vars
 		);
 
 		// Main css Front-end.
