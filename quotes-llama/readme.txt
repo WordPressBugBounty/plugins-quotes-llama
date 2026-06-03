@@ -4,7 +4,7 @@ Donate link: http://oooorgle.com/plugins/wp/quotes-llama/
 Tags: Quote, Think, Share
 Requires at least: 4.2.2
 Tested up to: 7.0
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -171,7 +171,7 @@ Short-codes are informational and for example only. Depending on your encoding, 
 **[quotes-llama all='(1)' cat='category' limit='#']**
 **(1) = (id, random, ascend, descend)**
 
-**To include this plugin in a Template File:**
+**To include this plugin in a Template File: Theme supporting of course.**
 
 * Display a random quote.
 **do_shortcode( "[quotes-llama]" );**

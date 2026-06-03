@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Quotes llama
  * Plugin URI:  https://oooorgle.com/plugins/wp/quotes-llama/
- * Version:     3.1.3
+ * Version:     3.1.4
  * Description: Share the thoughts that mean the most... display your quotes in blocks, widgets, pages, templates, galleries or posts.
  * Author:      oooorgle
  * Author URI:  https://oooorgle.com/plugins/wp/quotes-llama/
@@ -26,7 +26,7 @@ defined( 'QL_URL' ) || define( 'QL_URL', plugin_dir_url( __FILE__ ) );
 defined( 'QL_PATH' ) || define( 'QL_PATH', plugin_dir_path( __FILE__ ) );
 
 // Plugin versions.
-defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.3' );
+defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.4' );
 defined( 'QL_DB_VERSION' ) || define( 'QL_DB_VERSION', '2.0.1' );
 
 /**
@@ -1020,7 +1020,7 @@ class QuotesLlama {
 		$info = $data[ $i ];
 		return $info;
 	}
-
+	
 	/**
 	 * Plugin init.
 	 *
@@ -1061,12 +1061,12 @@ class QuotesLlama {
 		// Not logged in, front-end.
 		if ( ! is_admin() ) {
 
-			// Create JS vars.
-			if ( ! did_action( 'wp_enqueue_scripts', array( $this, 'scripts_localize' ) ) ) {
-				add_action( 'wp_enqueue_scripts', array( $this, 'scripts_localize' ) );
+			// Register front-end styles and dashicons.
+			if ( ! did_action( 'init', array( $this, 'scripts_localize' ) ) ) {
+				add_action( 'init', array( $this, 'scripts_localize' ) );
 			}
 
-			// Register scripts an styles.
+			// Register scripts and more styles.
 			if ( ! did_action( 'init', array( $this, 'scripts_register' ) ) ) {
 				add_action( 'init', array( $this, 'scripts_register' ), 1 );
 			}
@@ -1394,7 +1394,7 @@ class QuotesLlama {
 	}
 
 	/**
-	 * Front-end scripts and styles.
+	 * Register Front-end scripts and styles to be enqueued on page calls.
 	 * Localized variables (quotesllamaAjax).
 	 *
 	 * @since 1.0.0
@@ -1452,12 +1452,37 @@ class QuotesLlama {
 	}
 
 	/**
-	 * Front-end styles, settings and ocalizations that are loaded in all short-codes and widgets.
+	 * Enqueue Front-end styles and dashicons.
 	 *
 	 * @since 1.0.0
 	 * @access public
 	 */
 	public function scripts_localize() {
+
+		// Main css Front-end.
+		wp_enqueue_style( 'quotes-llama-css-style', QL_URL . 'includes/css/quotes-llama.css', array(), $this->plugin_version() );
+
+		// Enable admin dashicons set for Front-end if icons are enabled.
+		if ( $this->check_option( 'show_icons' ) ) {
+			wp_enqueue_style( 'dashicons' );
+		}
+	}
+
+	/**
+	 * Front-end Javascript localizations.
+	 *
+	 * @since 3.1.4
+	 * @access public
+	 */
+	public function scripts_localize_js() {
+
+		// Check if already localized to prevent multiple queries.
+		static $localized = false;
+
+		// Retrun if already localized.
+		if ( $localized ) {
+			return;
+		}
 
 		// Array of JS vars.
 		$ql_vars = array(
@@ -1482,15 +1507,9 @@ class QuotesLlama {
 			'AlignQuote'       => isset( $this->plugin_options['align_quote'] ) ? $this->plugin_options['align_quote'] : 'left',
 			'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
 			'ThisDIR'          => $this->icons_dir,
-			'ThisURL'          => $this->icons_url
+			'ThisURL'          => $this->icons_url,
+			'AllQuotes'        => $this->select_all()
 		);
-
-		// We should only assign our quote data if plugin is being called.
-		if ( shortcode_exists( 'quotes-llama' ) ) {
-			
-			// Add quotes to JS vars. This creates some load on server if a lot of quotes.
-			$ql_vars['AllQuotes'] = $this->select_all();	
-		}
 
 		// Javascript variable arrays quotesllamaOption and quotesllamaAjax, Front-end.
 		wp_localize_script(
@@ -1499,11 +1518,7 @@ class QuotesLlama {
 			$ql_vars
 		);
 
-		// Main css Front-end.
-		wp_enqueue_style( 'quotes-llama-css-style', QL_URL . 'includes/css/quotes-llama.css', array(), $this->plugin_version() );
-
-		// Enable admin dashicons set for Front-end.
-		wp_enqueue_style( 'dashicons-style', get_stylesheet_uri(), array( 'dashicons' ), $this->plugin_version() );
+		$localized = true;
 	}
 
 	/**
@@ -2257,6 +2272,7 @@ class QuotesLlama {
 				require_once 'includes/classes/class-quotesllama-auto.php';
 			}
 
+			$this->scripts_localize_js();
 			$ql_auto = new QuotesLlama_Auto();
 			return $ql_auto->ql_auto( $att_array['cat'] );
 		}
@@ -2268,6 +2284,7 @@ class QuotesLlama {
 				require_once 'includes/classes/class-quotesllama-auto.php';
 			}
 
+			$this->scripts_localize_js();
 			$ql_auto = new QuotesLlama_Auto();
 			return $ql_auto->ql_auto();
 		}
@@ -2283,11 +2300,13 @@ class QuotesLlama {
 
 			// [quotes-llama mode='gallery' cat='category'] Display quote from category in gallery mode.
 			if ( $att_array['cat'] && ( 'gallery' === $att_array['mode'] ) ) {
+				$this->scripts_localize_js();
 				return $ql_gallery->ql_gallery( $att_array['cat'] );
 			}
 
 			// [quotes-llama mode='gallery'] This should be called last in gallery modes.
 			if ( 'gallery' === $att_array['mode'] ) {
+				$this->scripts_localize_js();
 				return $ql_gallery->ql_gallery();
 			}
 		}
@@ -2299,6 +2318,7 @@ class QuotesLlama {
 				require_once 'includes/classes/class-quotesllama-search.php';
 			}
 
+			$this->scripts_localize_js();
 			$ql_search = new QuotesLlama_Search();
 			return $ql_search->ql_search( wp_create_nonce( 'quotes_llama_nonce' ), $att_array['class'] );
 		}
@@ -2310,6 +2330,7 @@ class QuotesLlama {
 				require_once 'includes/classes/class-quotesllama-page.php';
 			}
 
+			$this->scripts_localize_js();
 			$ql_page = new QuotesLlama_Page();
 			return $ql_page->ql_page( wp_create_nonce( 'quotes_llama_nonce' ), $att_array['cat'] );
 		}
@@ -2321,6 +2342,7 @@ class QuotesLlama {
 				require_once 'includes/classes/class-quotesllama-page.php';
 			}
 
+			$this->scripts_localize_js();
 			$ql_page = new QuotesLlama_Page();
 			return $ql_page->ql_page( wp_create_nonce( 'quotes_llama_nonce' ), '' );
 		}
@@ -2508,7 +2530,7 @@ class QuotesLlama {
 	 * @param string $nonce        - Nonce.
 	 */
 	public function widget_instance( $quote_id = 0, $show_author = true, $show_source = true, $show_image = true, $next_quote = true, $gallery = false, $category = '', $div_instance = 0, $nonce = '' ) {
-
+		$this->scripts_localize_js();
 		$post_nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
 
 		if ( $post_nonce ) {
