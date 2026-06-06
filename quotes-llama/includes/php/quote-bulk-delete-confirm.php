@@ -13,30 +13,32 @@
 
 namespace Quotes_Llama;
 
-$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+// Deny access except through WordPress.
+defined( 'ABSPATH' ) || die( 'Cannot access pages directly.' );
 
+$quotes_llama_nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
 
 // Lower select box is action2.
-if ( wp_verify_nonce( $nonce, 'llama_admin_delete_bulk' ) ) {
-	$bd = isset( $_GET['bd'] ) ? sanitize_text_field( wp_unslash( $_GET['bd'] ) ) : '';
+if ( wp_verify_nonce( $quotes_llama_nonce, 'llama_admin_delete_bulk' ) ) {
+	$quotes_llama_bd = isset( $_GET['bd'] ) ? sanitize_text_field( wp_unslash( $_GET['bd'] ) ) : '';
 
 	// Success.
-	if ( 1 <= $bd ) {
-		$this->msg = $this->message( esc_html__( 'Transaction completed: ', 'quotes-llama' ) . $bd . ' ' . esc_html__( 'Quotes deleted.', 'quotes-llama' ), 'yay' );
+	if ( 1 <= $quotes_llama_bd ) {
+		$this->msg = $this->message( esc_html__( 'Transaction completed: ', 'quotes-llama' ) . $quotes_llama_bd . ' ' . esc_html__( 'Quotes deleted.', 'quotes-llama' ), 'yay' );
 	}
 
 	// Failed.
-	if ( 'n' === $bd ) {
+	if ( 'n' === $quotes_llama_bd ) {
 		$this->msg = $this->message( esc_html__( 'Transaction failed: Unable to delete quotes.', 'quotes-llama' ), 'nay' );
 	}
 
 	// Empty checks.
-	if ( 'u' === $bd ) {
+	if ( 'u' === $quotes_llama_bd ) {
 		$this->msg = $this->message( esc_html__( 'Transaction failed: No quotes selected.', 'quotes-llama' ), 'nay' );
 	}
 
 	// Empty params.
-	if ( 'p' === $bd ) {
+	if ( 'p' === $quotes_llama_bd ) {
 		$this->msg = $this->message( esc_html__( 'Transaction failed: Select a bulk action from the drop-down.', 'quotes-llama' ), 'nay' );
 	}
 } else {

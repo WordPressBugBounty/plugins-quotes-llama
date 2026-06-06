@@ -13,18 +13,21 @@
 
 namespace Quotes_Llama;
 
-$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+// Deny access except through WordPress.
+defined( 'ABSPATH' ) || die( 'Cannot access pages directly.' );
 
-if ( wp_verify_nonce( $nonce, 'delete_edit' ) ) {
-	$d = isset( $_GET['d'] ) ? sanitize_text_field( wp_unslash( $_GET['d'] ) ) : '';
+$quotes_llama_nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+
+if ( wp_verify_nonce( $quotes_llama_nonce, 'delete_edit' ) ) {
+	$quotes_llama_d = isset( $_GET['d'] ) ? sanitize_text_field( wp_unslash( $_GET['d'] ) ) : '';
 
 	// Success.
-	if ( 'y' === $d ) {
+	if ( 'y' === $quotes_llama_d ) {
 		$this->msg = $this->message( esc_html__( 'Transaction completed: Quote deleted.', 'quotes-llama' ), 'yay' );
 	}
 
 	// Failed.
-	if ( 'n' === $d ) {
+	if ( 'n' === $quotes_llama_d ) {
 		$this->msg = $this->message( esc_html__( 'Transaction failed: Unable to delete quote.', 'quotes-llama' ), 'nay' );
 	}
 } else {

@@ -13,8 +13,11 @@
 
 namespace Quotes_Llama;
 
+// Deny access except through WordPress.
+defined( 'ABSPATH' ) || die( 'Cannot access pages directly.' );
+
 // These are the names of the WordPress dash-icons.
-$dash_icons_array = array(
+$quotes_llama_dash_icons_array = array(
 	'menu',
 	'menu-alt',
 	'menu-alt2',
@@ -349,7 +352,7 @@ $dash_icons_array = array(
 );
 
 // Image extensions.
-$image_extensions = array(
+$quotes_llama_image_extensions = array(
 	'png',
 	'jpg',
 	'jpeg',
@@ -358,33 +361,33 @@ $image_extensions = array(
 	'svg',
 );
 
-$upload_d  = wp_upload_dir();
-$icons_url = $upload_d['baseurl'] . '/quotes-llama/';
-$icons_dir = $upload_d['basedir'] . '/quotes-llama/';
+$quotes_llama_upload_d  = wp_upload_dir();
+$quotes_llama_icons_url = $quotes_llama_upload_d['baseurl'] . '/quotes-llama/';
+$quotes_llama_icons_dir = $quotes_llama_upload_d['basedir'] . '/quotes-llama/';
 
 // Get list of image files in upload directory.
-$all_img_png  = glob( $icons_dir . '*.png' );
-$all_img_jpg  = glob( $icons_dir . '*.jpg' );
-$all_img_jpeg = glob( $icons_dir . '*.jpeg' );
-$all_img_gif  = glob( $icons_dir . '*.gif' );
-$all_img_bmp  = glob( $icons_dir . '*.bmp' );
-$all_img_svg  = glob( $icons_dir . '*.svg' );
-$all_img      = array_merge( $all_img_png, $all_img_jpg, $all_img_jpeg, $all_img_gif, $all_img_bmp, $all_img_svg );
+$quotes_llama_all_img_png  = glob( $quotes_llama_icons_dir . '*.png' );
+$quotes_llama_all_img_jpg  = glob( $quotes_llama_icons_dir . '*.jpg' );
+$quotes_llama_all_img_jpeg = glob( $quotes_llama_icons_dir . '*.jpeg' );
+$quotes_llama_all_img_gif  = glob( $quotes_llama_icons_dir . '*.gif' );
+$quotes_llama_all_img_bmp  = glob( $quotes_llama_icons_dir . '*.bmp' );
+$quotes_llama_all_img_svg  = glob( $quotes_llama_icons_dir . '*.svg' );
+$quotes_llama_all_img      = array_merge( $quotes_llama_all_img_png, $quotes_llama_all_img_jpg, $quotes_llama_all_img_jpeg, $quotes_llama_all_img_gif, $quotes_llama_all_img_bmp, $quotes_llama_all_img_svg );
 
 // For image icons html.
-$icons_img = '';
+$quotes_llama_icons_img = '';
 
 // For Dash-Icons html.
-$icons_dashicons = '';
+$quotes_llama_icons_dashicons = '';
 
 // Get extenstions of image files.
-$ext = strtolower( pathinfo( $icon_set_default, PATHINFO_EXTENSION ) );
+$quotes_llama_ext = strtolower( pathinfo( $quotes_llama_icon_set_default, PATHINFO_EXTENSION ) );
 
 // Current image file or dashicon.
-if ( in_array( $ext, $image_extensions, true ) ) {
-	$icon_span = '<span class="quotes-llama-icons"><img src="' . $icons_url . $icon_set_default . '"></span>';
+if ( in_array( $quotes_llama_ext, $quotes_llama_image_extensions, true ) ) {
+	$quotes_llama_icon_span = '<span class="quotes-llama-icons"><img src="' . $quotes_llama_icons_url . $quotes_llama_icon_set_default . '"></span>';
 } else {
-	$icon_span = '<span class="dashicons dashicons-' . esc_attr( $icon_set_default ) . '"></span></span>';
+	$quotes_llama_icon_span = '<span class="dashicons dashicons-' . esc_attr( $quotes_llama_icon_set_default ) . '"></span></span>';
 }
 
 // Include validate image class.
@@ -392,48 +395,48 @@ if ( ! class_exists( 'QuotesLlama_Validate_Image' ) ) {
 	require_once QL_PATH . 'includes/classes/class-quotesllama-validate-image.php';
 }
 
-$qlv = new QuotesLlama_Validate_Image();
+$quotes_llama_qlv = new QuotesLlama_Validate_Image();
 
 // Before.
-$icons_before = '<fieldset class="quotes-llama-icons-' . esc_attr( $icon_set ) . '">
-	<legend>' . esc_html( $icon_set_title ) . '</legend>
-	<a href="#quotes-llama-icons-' . esc_attr( $icon_set ) . '-select">
+$quotes_llama_icons_before = '<fieldset class="quotes-llama-icons-' . esc_attr( $quotes_llama_icon_set ) . '">
+	<legend>' . esc_html( $quotes_llama_icon_set_title ) . '</legend>
+	<a href="#quotes-llama-icons-' . esc_attr( $quotes_llama_icon_set ) . '-select">
 		<span class="arr dashicons dashicons-arrow-down"></span>
-		<span class="quotes-llama-icons-' . esc_attr( $icon_set ) . '-sel">' .
-		$icon_span .
+		<span class="quotes-llama-icons-' . esc_attr( $quotes_llama_icon_set ) . '-sel">' .
+		$quotes_llama_icon_span .
 	'</a>
-	<ul id="quotes-llama-icons-' . esc_attr( $icon_set ) . '-select">';
+	<ul id="quotes-llama-icons-' . esc_attr( $quotes_llama_icon_set ) . '-select">';
 
 // Create html for all image files.
-foreach ( $all_img as $img ) {
+foreach ( $quotes_llama_all_img as $quotes_llama_img ) {
 
 	// Get ext to check for svg file.
-	$svg = strtolower( pathinfo( $img, PATHINFO_EXTENSION ) );
+	$quotes_llama_svg = strtolower( pathinfo( $quotes_llama_img, PATHINFO_EXTENSION ) );
 
 	// Validate images... svg by extension only.
-	if ( $qlv->ql_validate_image( $img ) || 'svg' === $svg ) {
-		$img_path   = $img;
-		$img        = str_replace( $icons_dir, '', $img );
-		$icons_img .= '<li>
+	if ( $quotes_llama_qlv->ql_validate_image( $quotes_llama_img ) || 'svg' === $quotes_llama_svg ) {
+		$quotes_llama_img_path   = $quotes_llama_img;
+		$quotes_llama_img        = str_replace( $quotes_llama_icons_dir, '', $quotes_llama_img );
+		$quotes_llama_icons_img .= '<li>
 				<label>
-					<span class="quotes-llama-icons"><img src="' . $icons_url . $img . '"></span>
-					<input type="radio" class="quotes-llama-icons-' . esc_attr( $icon_set ) . '-hidden" name="icon" value="' . $img . '" id="' . $img . '">
+					<span class="quotes-llama-icons"><img src="' . $quotes_llama_icons_url . $quotes_llama_img . '"></span>
+					<input type="radio" class="quotes-llama-icons-' . esc_attr( $quotes_llama_icon_set ) . '-hidden" name="icon" value="' . $quotes_llama_img . '" id="' . $quotes_llama_img . '">
 				</label>
 			</li>';
 	}
 }
 
 // Create html for Dash-Icons.
-foreach ( $dash_icons_array as $di ) {
-	$icons_dashicons .= '<li>
+foreach ( $quotes_llama_dash_icons_array as $quotes_llama_di ) {
+	$quotes_llama_icons_dashicons .= '<li>
 			<label>
-				<span class="dashicons dashicons-' . $di . '"></span>
-				<input type="radio" class="quotes-llama-icons-' . esc_attr( $icon_set ) . '-hidden" name="icon" value="' . $di . '" id="' . $di . '">
+				<span class="dashicons dashicons-' . $quotes_llama_di . '"></span>
+				<input type="radio" class="quotes-llama-icons-' . esc_attr( $quotes_llama_icon_set ) . '-hidden" name="icon" value="' . $quotes_llama_di . '" id="' . $quotes_llama_di . '">
 			</label>
 		</li>';
 }
 
 // After.
-$icons_after = '</ul></fieldset>';
+$quotes_llama_icons_after = '</ul></fieldset>';
 
-return $icons_before . $icons_img . $icons_dashicons . $icons_after;
+return $quotes_llama_icons_before . $quotes_llama_icons_img . $quotes_llama_icons_dashicons . $quotes_llama_icons_after;

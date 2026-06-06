@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Quotes llama
  * Plugin URI:  https://oooorgle.com/plugins/wp/quotes-llama/
- * Version:     3.1.4
+ * Version:     3.1.5
  * Description: Share the thoughts that mean the most... display your quotes in blocks, widgets, pages, templates, galleries or posts.
  * Author:      oooorgle
  * Author URI:  https://oooorgle.com/plugins/wp/quotes-llama/
@@ -26,7 +26,7 @@ defined( 'QL_URL' ) || define( 'QL_URL', plugin_dir_url( __FILE__ ) );
 defined( 'QL_PATH' ) || define( 'QL_PATH', plugin_dir_path( __FILE__ ) );
 
 // Plugin versions.
-defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.4' );
+defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.5' );
 defined( 'QL_DB_VERSION' ) || define( 'QL_DB_VERSION', '2.0.1' );
 
 /**
@@ -1020,7 +1020,7 @@ class QuotesLlama {
 		$info = $data[ $i ];
 		return $info;
 	}
-	
+
 	/**
 	 * Plugin init.
 	 *
@@ -1054,9 +1054,6 @@ class QuotesLlama {
 
 		add_action( 'wp_ajax_widget_instance', array( $this, 'widget_instance' ) );
 		add_action( 'wp_ajax_nopriv_widget_instance', array( $this, 'widget_instance' ) );
-
-		// Define i18n language folder in function plugin_text_domain().
-		add_action( 'text_domain', array( $this, 'text_domain' ) );
 
 		// Not logged in, front-end.
 		if ( ! is_admin() ) {
@@ -1508,7 +1505,7 @@ class QuotesLlama {
 			'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
 			'ThisDIR'          => $this->icons_dir,
 			'ThisURL'          => $this->icons_url,
-			'AllQuotes'        => $this->select_all()
+			'AllQuotes'        => $this->select_all(),
 		);
 
 		// Javascript variable arrays quotesllamaOption and quotesllamaAjax, Front-end.
@@ -2246,9 +2243,10 @@ class QuotesLlama {
 	 * @since 1.0.0
 	 * @access public
 	 *
-	 * @param array $atts - mode,class,id,all,cat,quotes,limit.
+	 * @param array $atts - mode, class, id, all, cat, quotes, limit.
 	 */
 	public function shortcodes( $atts ) {
+
 		$att_array = shortcode_atts(
 			array(
 				'mode'   => 'quote',
@@ -2370,7 +2368,7 @@ class QuotesLlama {
 				require_once 'includes/classes/class-quotesllama-quotes.php';
 			}
 
-			$ql_queries = new QuotesLlama_quotes();
+			$ql_queries = new QuotesLlama_Quotes();
 			return $ql_queries->ql_quotes( $att_array['cat'], $att_array['quotes'] );
 		}
 
@@ -2486,16 +2484,6 @@ class QuotesLlama {
 			}
 		}
 		return '';
-	}
-
-	/**
-	 * Define i18n language folder.
-	 *
-	 * @since 1.0.0
-	 * @access private
-	 */
-	private function text_domain() {
-		load_plugin_textdomain( 'quotes-llama', false, QL_URL . 'lang' );
 	}
 
 	/**

@@ -60,6 +60,7 @@ class QuotesLlama_Quotes {
 
 		// Uses Ajax if center image, text, or limiting quote.
 		if ( $image_at_top || $border_radius || $char_limit ) {
+			$ql->scripts_localize_js();
 			wp_enqueue_script( 'quotesllamaAjax' );
 		}
 

@@ -138,12 +138,12 @@ class QuotesLlama_Admin {
 	 * @access public
 	 */
 	public function author_icon_callback() {
-		$icon_set         = 'author';
-		$icon_set_title   = 'Default author icon.';
-		$icon_set_default = $this->ql->check_option( 'author_icon' );
+		$quotes_llama_icon_set         = 'author';
+		$quotes_llama_icon_set_title   = 'Default author icon.';
+		$quotes_llama_icon_set_default = $this->ql->check_option( 'author_icon' );
 		echo '<input type="hidden" id="author_icon" name="quotes-llama-settings[author_icon]" value="' . esc_attr( $this->ql->check_option( 'author_icon' ) ) . '">';
-		$allowed_html = $this->ql->allowed_html( 'qform' );
-		echo wp_kses( include QL_PATH . 'includes/php/dash-icons.php', $allowed_html );
+		$quotes_llama_icon_allowed_html = $this->ql->allowed_html( 'qform' );
+		echo wp_kses( include QL_PATH . 'includes/php/dash-icons.php', $quotes_llama_icon_allowed_html );
 	}
 
 	/**
@@ -600,7 +600,16 @@ class QuotesLlama_Admin {
 	 * @access public
 	 */
 	public function page_fields() {
-		register_setting( 'quotes-llama-settings', 'quotes-llama-settings' );
+
+		register_setting(
+			'quotes-llama-settings',
+			'quotes-llama-settings',
+			array(
+				'type'              => 'array',
+				'sanitize_callback' => array( $this, 'sanitize_quotes_llama_options' ),
+				'default'           => array(),
+			)
+		);
 
 		// Section post. Settings sections defined here.
 		if ( 'options' === $this->active_tab ) {
@@ -1288,6 +1297,83 @@ class QuotesLlama_Admin {
 	}
 
 	/**
+	 * Sanitize mixed data types for quotes-llama-settings.
+	 *
+	 * @since 3.1.5
+	 * @access public
+	 *
+	 * @param array $input - quotes-llama-settings[].
+	 *
+	 * @return array - Sanitized settings.
+	 */
+	public function sanitize_quotes_llama_options( $input ) {
+		$output = array();
+
+		// Bool - checked is $_POST; unchecked is absent.
+		$booleans = array(
+			'show_page_author',
+			'show_page_source',
+			'show_page_image',
+			'show_gallery_author',
+			'show_gallery_source',
+			'show_gallery_image',
+			'show_page_next',
+			'border_radius',
+			'image_at_top',
+			'show_icons',
+			'search_allow',
+			'http_display',
+			'gallery_timer_show',
+			'admin_reset',
+		);
+
+		foreach ( $booleans as $key ) {
+			$output[ $key ] = isset( $input[ $key ] ) ? true : false;
+		}
+
+		// String - text strings.
+		$strings = array(
+			'next_quote_text',
+			'ellipses_text',
+			'read_more_text',
+			'read_less_text',
+			'author_icon',
+			'source_icon',
+			'background_color',
+			'foreground_color',
+			'gallery_timer_interval',
+			'transition_speed',
+			'align_quote',
+			'default_order',
+			'default_sort',
+			'sidebar',
+			'permission_level',
+			'source_newline',
+			'export_delimiter',
+		);
+
+		foreach ( $strings as $key ) {
+			if ( isset( $input[ $key ] ) ) {
+				$output[ $key ] = sanitize_text_field( $input[ $key ] );
+			}
+		}
+
+		// Integer - Numbers.
+		$integers = array(
+			'character_limit',
+			'gallery_timer_minimum',
+		);
+
+		foreach ( $integers as $key ) {
+			if ( isset( $input[ $key ] ) ) {
+				$output[ $key ] = absint( $input[ $key ] );
+			}
+		}
+
+		return $output;
+	}
+
+	/**
 	 * Options tab - whether to display dashicon icons in quotes and sources.
 	 *
 	 * @since 1.0.0
@@ -1318,9 +1404,9 @@ class QuotesLlama_Admin {
 	 * @access public
 	 */
 	public function source_icon_callback() {
-		$icon_set         = 'source';
-		$icon_set_title   = 'Default source icon.';
-		$icon_set_default = $this->ql->check_option( 'source_icon' );
+		$quotes_llama_icon_set         = 'source';
+		$quotes_llama_icon_set_title   = 'Default source icon.';
+		$quotes_llama_icon_set_default = $this->ql->check_option( 'source_icon' );
 		echo '<input type="hidden" id="source_icon" name="quotes-llama-settings[source_icon]" value="' . esc_attr( $this->ql->check_option( 'source_icon' ) ) . '">';
 		$allowed_html = $this->ql->allowed_html( 'qform' );
 		echo wp_kses( include QL_PATH . 'includes/php/dash-icons.php', $allowed_html );

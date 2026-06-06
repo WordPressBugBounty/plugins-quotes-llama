@@ -96,16 +96,16 @@ class QuotesLlama_Form {
 		$cat_label    = __( 'Category', 'quotes-llama' );
 
 		// Create our source icon selector droplist.
-		$icon_set          = 'source';
-		$icon_set_title    = 'Source icon.';
-		$icon_set_default  = $source_icon;
+		$quotes_llama_icon_set          = 'source';
+		$quotes_llama_icon_set_title    = 'Source icon.';
+		$quotes_llama_icon_set_default  = $source_icon;
 		$source_icon_html  = '<input type="hidden" id="source_icon" name="source_icon" value="' . esc_attr( $source_icon ) . '">';
 		$source_icon_html .= require QL_PATH . 'includes/php/dash-icons.php';
 
 		// Create our author icon selector droplist.
-		$icon_set          = 'author';
-		$icon_set_title    = 'Author icon.';
-		$icon_set_default  = $author_icon;
+		$quotes_llama_icon_set          = 'author';
+		$quotes_llama_icon_set_title    = 'Author icon.';
+		$quotes_llama_icon_set_default  = $author_icon;
 		$author_icon_html  = '<input type="hidden" id="author_icon" name="author_icon" value="' . esc_attr( $author_icon ) . '">';
 		$author_icon_html .= require QL_PATH . 'includes/php/dash-icons.php';
 

@@ -13,15 +13,18 @@
 
 namespace Quotes_Llama;
 
+// Deny access except through WordPress.
+defined( 'ABSPATH' ) || die( 'Cannot access pages directly.' );
+
 if ( check_admin_referer( 'quote_llama_import_nonce', 'quote_llama_import_nonce' ) ) {
 
 	if ( ! class_exists( 'QuotesLlama_Backup' ) ) {
 		require_once QL_PATH . 'includes/classes/class-quotesllama-backup.php';
 	}
 
-	$import    = new QuotesLlama_Backup( $this->check_option( 'export_delimiter' ) );
-	$nonce     = wp_create_nonce( 'quotes_llama_import' );
-	$this->msg = $this->message( 'Transaction completed: ' . $import->generate_import( $nonce ), 'yay' );
+	$quotes_llama_import    = new QuotesLlama_Backup( $this->check_option( 'export_delimiter' ) );
+	$quotes_llama_nonce     = wp_create_nonce( 'quotes_llama_import' );
+	$this->msg = $this->message( 'Transaction completed: ' . $quotes_llama_import->generate_import( $quotes_llama_nonce ), 'yay' );
 
 } else {
 	$this->msg = $this->message( '', 'nonce' );

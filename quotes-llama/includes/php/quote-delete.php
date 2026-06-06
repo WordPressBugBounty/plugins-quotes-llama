@@ -13,25 +13,28 @@
 
 namespace Quotes_Llama;
 
-$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-$id    = isset( $_GET['quote_id'] ) ? sanitize_text_field( wp_unslash( $_GET['quote_id'] ) ) : '';
-$s     = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
-$s     = ! empty( $s ) ? '&s=' . $s : '';
-$sc    = isset( $_GET['sc'] ) ? sanitize_text_field( wp_unslash( $_GET['sc'] ) ) : '';
-$sc    = ! empty( $sc ) ? '&sc=' . $sc : '';
-$paged = isset( $_GET['paged'] ) ? sanitize_text_field( wp_unslash( $_GET['paged'] ) ) : '';
-$paged = ! empty( $paged ) ? '&paged=' . $paged : '';
+// Deny access except through WordPress.
+defined( 'ABSPATH' ) || die( 'Cannot access pages directly.' );
+
+$quotes_llama_nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+$quotes_llama_id    = isset( $_GET['quote_id'] ) ? sanitize_text_field( wp_unslash( $_GET['quote_id'] ) ) : '';
+$quotes_llama_s     = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
+$quotes_llama_s     = ! empty( $quotes_llama_s ) ? '&s=' . $quotes_llama_s : '';
+$quotes_llama_sc    = isset( $_GET['sc'] ) ? sanitize_text_field( wp_unslash( $_GET['sc'] ) ) : '';
+$quotes_llama_sc    = ! empty( $quotes_llama_sc ) ? '&sc=' . $quotes_llama_sc : '';
+$quotes_llama_paged = isset( $_GET['paged'] ) ? sanitize_text_field( wp_unslash( $_GET['paged'] ) ) : '';
+$quotes_llama_paged = ! empty( $quotes_llama_paged ) ? '&paged=' . $quotes_llama_paged : '';
 
 // Include Delete class.
 if ( ! class_exists( 'QuotesLlama_Delete' ) ) {
 	require_once QL_PATH . 'includes/classes/class-quotesllama-delete.php';
 }
 
-$ql_delete = new QuotesLlama_Delete();
+$quotes_llama_delete = new QuotesLlama_Delete();
 
-if ( wp_verify_nonce( $nonce, 'delete_edit' ) ) {
-	$d = $ql_delete->ql_delete( $id );
-	header( 'Location: ' . get_bloginfo( 'wpurl' ) . '/wp-admin/admin.php?page=quotes-llama&d=' . $d . $s . $sc . $paged . '&_wpnonce=' . $nonce );
+if ( wp_verify_nonce( $quotes_llama_nonce, 'delete_edit' ) ) {
+	$quotes_llama_d = $quotes_llama_delete->ql_delete( $quotes_llama_id );
+	header( 'Location: ' . get_bloginfo( 'wpurl' ) . '/wp-admin/admin.php?page=quotes-llama&d=' . $quotes_llama_d . $quotes_llama_s . $quotes_llama_sc . $quotes_llama_paged . '&_wpnonce=' . $quotes_llama_nonce );
 } else {
 	$this->msg = $this->message( '', 'nonce' );
 }

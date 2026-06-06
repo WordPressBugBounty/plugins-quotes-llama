@@ -51,6 +51,12 @@ class QuotesLlama_Quote {
 		// bool Include field seperator.
 		$use_comma = false;
 
+		// bool Make image round border.
+		$border_radius = $ql->check_option( 'border_radius' );
+
+		// bool Center image above quote.
+		$image_at_top = $ql->check_option( 'image_at_top' );
+
 		// bool Display Author.
 		$show_author = $ql->check_option( 'show_page_author' );
 
@@ -66,12 +72,6 @@ class QuotesLlama_Quote {
 		// string Seperator or new line.
 		$source_newline = $ql->check_option( 'source_newline' );
 
-		// bool Center image above quote.
-		$image_at_top = $ql->check_option( 'image_at_top' );
-
-		// bool Make image round border.
-		$border_radius = $ql->check_option( 'border_radius' );
-
 		// int Character limit.
 		$char_limit = $ql->check_option( 'character_limit' );
 
@@ -80,6 +80,7 @@ class QuotesLlama_Quote {
 
 		// Uses Ajax if center image or text.
 		if ( $image_at_top || $border_radius || $char_limit || $show_next ) {
+			$ql->scripts_localize_js();
 			wp_enqueue_script( 'quotesllamaAjax' );
 		}
 

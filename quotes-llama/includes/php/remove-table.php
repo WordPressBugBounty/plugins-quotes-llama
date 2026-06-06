@@ -13,8 +13,11 @@
 
 namespace Quotes_Llama;
 
+// Deny access except through WordPress.
+defined( 'ABSPATH' ) || die( 'Cannot access pages directly.' );
+
 if ( check_admin_referer( 'quotes_llama_remove_table_nonce', 'quotes_llama_remove_table_nonce' ) ) {
-	$sql = $this->db_remove();
+	$quotes_llama_sql = $this->db_remove();
 } else {
 	$this->msg = $this->message( '', 'nonce' );
 }
