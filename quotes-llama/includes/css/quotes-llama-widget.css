@@ -1,14 +1,21 @@
+/* ========================
+	Quotes Llama – Widget.
+	======================= */
+
+/* Wrapper */
 .quotes-llama-widget-random {
 	display: block;
 	width: 100%;
 	padding: 5px;
 }
 
+/* Quote */
 .quotes-llama-widget-quote {
 	position: relative;
 	padding: 5px;
 }
 
+/* Image */
 .quotes-llama-widget-random img {
 	max-width: 150px;
 	max-height: 150px;
@@ -19,6 +26,7 @@
 	float: left;
 }
 
+/* Next Quote */
 .quotes-llama-widget-next {
 	display: block;
 	text-align: right;
@@ -26,17 +34,20 @@
 	font-size: small;
 }
 
+/* Author */
 .quotes-llama-widget-author {
 	display: block;
 	text-align: right;
 	font-style: italic;
 }
 
+/* Source */
 .quotes-llama-widget-source {
 	font-size: small;
 	font-style: italic;
 }
 
+/* Countdown */
 .quotes-llama-widget-countdown {
 	position: absolute;
 	right: 0px;
@@ -45,56 +56,33 @@
 	font-size: small;
 }
 
-@media only screen and (max-width: 1920px) {
+/* ------------
+	Responsive
+	----------- */
+@media (max-width: 1024px) {
+	.quotes-llama-widget-quote {
+		font-size: 0.95rem;
+	}
 
-}
+	.quotes-llama-widget-author {
+		font-size: 0.90rem;
+	}
 
-@media only screen and (max-width: 1366px) {
-	.quotes-llama-widget-random img {
-		max-width: 138px;
-		max-height: 138px;
-		margin-right: 8px;
-		border-radius: 3px;
-		box-shadow: 3px 7px 9px 0px rgba(0,0,0,0.60);
+	.quotes-llama-widget-random img  {
+		max-width: 120px;
 	}
 }
 
-@media only screen and (max-width: 1080px) {
-	.quotes-llama-widget-random img {
-		max-width: 115px;
-		max-height: 115px;
-		margin-right: 14px;
-		border-radius: 3px;
-		box-shadow: 3px 7px 9px 0px rgba(0,0,0,0.60);
+@media (max-width: 800px) {
+	.quotes-llama-widget-quote {
+		font-size: 0.90rem;
 	}
-}
 
-@media only screen and (max-width: 768px) {
-	.quotes-llama-widget-random img {
+	.quotes-llama-widget-author {
+		font-size: 0.85rem;
+	}
+
+	.quotes-llama-widget-random img  {
 		max-width: 90px;
-		max-height: 90px;
-		margin-right: 13px;
-		border-radius: 2px;
-		box-shadow: 2px 5px 6px 0px rgba(0,0,0,0.40);
-	}
-}
-
-@media only screen and (max-width: 360px) {
-	img .quotes-llama-widget-random {
-		max-width: 65px;
-		max-height: 65px;
-		margin-right: 12px;
-		border-radius: 2px;
-		box-shadow: 2px 5px 6px 0px rgba(0,0,0,0.30);
-	}
-}
-
-@media only screen and (max-width: 240px) {
-	.quotes-llama-widget-random img {
-		max-width: 45px;
-		max-height: 45px;
-		margin-right: 11px;
-		border-radius: 2px;
-		box-shadow: 2px 5px 6px 0px rgba(0,0,0,0.30);
 	}
 }

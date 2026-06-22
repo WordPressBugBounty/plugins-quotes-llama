@@ -22,9 +22,9 @@ if ( check_admin_referer( 'quote_llama_import_nonce', 'quote_llama_import_nonce'
 		require_once QL_PATH . 'includes/classes/class-quotesllama-backup.php';
 	}
 
-	$quotes_llama_import    = new QuotesLlama_Backup( $this->check_option( 'export_delimiter' ) );
-	$quotes_llama_nonce     = wp_create_nonce( 'quotes_llama_import' );
-	$this->msg = $this->message( 'Transaction completed: ' . $quotes_llama_import->generate_import( $quotes_llama_nonce ), 'yay' );
+	$quotes_llama_import = new QuotesLlama_Backup( $this->check_option( 'export_delimiter' ) );
+	$quotes_llama_nonce  = wp_create_nonce( 'quotes_llama_import' );
+	$this->msg           = $this->message( 'Transaction completed: ' . $quotes_llama_import->generate_import( $quotes_llama_nonce ), 'yay' );
 
 } else {
 	$this->msg = $this->message( '', 'nonce' );

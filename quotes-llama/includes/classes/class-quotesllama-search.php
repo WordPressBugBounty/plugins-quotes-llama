@@ -45,7 +45,6 @@ class QuotesLlama_Search {
 	 * @access public
 	 */
 	public function __construct() {
-
 	}
 
 	/**
@@ -124,12 +123,12 @@ class QuotesLlama_Search {
 
 				$this->ql_page_loggedin = '<div class="quotes-llama-search-quotes-form">' .
 					'<form onsubmit="return false;" method="post">' .
+						'<input type="hidden" class="quotes-llama-search-token" name="ql_token" value="' . $nonce . '" >' .
 						'<input type="text" ' .
 							'class="quotes-llama-search-quotesearch" ' .
 							'id="quotes-llama-search-quotesearch" ' .
 							'name="quotes-llama-search-quotesearch" ' .
 							'target="' . esc_attr( $target ) . '"' .
-							'nonce="' . $nonce . '" ' .
 							'size="20">' .
 						'<br><select name="sc" class="sc">' .
 							'<option value="quote">' .

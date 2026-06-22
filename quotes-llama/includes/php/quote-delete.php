@@ -39,3 +39,4 @@ if ( wp_verify_nonce( $quotes_llama_nonce, 'delete_edit' ) ) {
 	$this->msg = $this->message( '', 'nonce' );
 }
 
+

@@ -179,6 +179,22 @@ var quotes_llama_transitionspeed = parseInt( quotesllamaOption.TransitionSpeed )
  */
 var quotes_llama_quotes = quotesllamaOption.AllQuotes;
 
+/**
+ * Old Id of Auto quote for clearInterval.
+ *
+ * @since 3.1.6
+ * @var int
+ */
+var quotes_llama_old_auto_uid = 0;
+
+/**
+ * Old Id of Widget quote for clearInterval.
+ *
+ * @since 3.1.6
+ * @var int
+ */
+var quotes_llama_old_widget_uid = 0;
+
 // ***** Begin Admin *****
 
 /*
@@ -189,7 +205,7 @@ var quotes_llama_quotes = quotesllamaOption.AllQuotes;
  * @param string selector        - Element to load image url into from selection in library.
  * @param string button_selector - Element of button clicked to open the media library.
  */
-function quotes_llama_media_gallery ( selector, button_selector )  {
+function quotes_llama_media_gallery( selector, button_selector )  {
 	let clicked_button;
 	clicked_button = false;
 
@@ -199,15 +215,13 @@ function quotes_llama_media_gallery ( selector, button_selector )  {
 		function (
 			i,
 			input
-		)
-		{
+		) {
 			let button;
 			button = jQuery( input ).next( button_selector );
 			button.click(
 				function (
 					event
-				)
-				{
+				) {
 					event.preventDefault();
 					let selected_img;
 					selected_img;
@@ -234,7 +248,7 @@ function quotes_llama_media_gallery ( selector, button_selector )  {
 					);
 
 					let quotes_llama_media_gallery_set_image;
-					quotes_llama_media_gallery_set_image = function() {
+					quotes_llama_media_gallery_set_image = function () {
 
 						// The image selected and media manager closing.
 						let selection;
@@ -247,8 +261,7 @@ function quotes_llama_media_gallery ( selector, button_selector )  {
 
 						// Iterate through selected elements.
 						selection.each(
-							function (	attachment )
-							{
+							function (	attachment ) {
 								// Get thumbnail url. View the object dump to get an idea of sizes available. var_dump(attachment.attributes);.
 								let url;
 								url = attachment.attributes.sizes.thumbnail.url;
@@ -290,7 +303,7 @@ quotes_llama_media_gallery( '#quotes_llama_imgurl', '.quotes-llama-media-button'
  * @since 2.0.5
  */
 jQuery( '.ql-manage-cat' ).each(
-	function() {
+	function () {
 		jQuery( this ).on(
 			'click',
 			function () {
@@ -335,7 +348,7 @@ jQuery(
 ).on(
 	'click',
 	'#ql-new-cat-btn',
-	function() {
+	function () {
 		let container = jQuery( '.ql-category' );
 		let newCat    = jQuery( '#ql-new-category' ).val();
 
@@ -361,8 +374,7 @@ if ( jQuery( '.quotes-llama-auto' )[0] ) {
 		function (
 			i,
 			list
-		)
-		{
+		) {
 			let quotes_llama_elements;
 			let quotes_llama_list_class;
 			let quotes_llama_auto_category;
@@ -377,8 +389,7 @@ if ( jQuery( '.quotes-llama-auto' )[0] ) {
 				function (
 					i,
 					element
-				)
-				{
+				) {
 					let quotes_llama_this_class;
 					quotes_llama_this_class         = jQuery( element ).attr( 'class' );
 					quotes_llama_list_class.data[i] = quotes_llama_this_class;
@@ -442,8 +453,7 @@ if ( jQuery( '.quotes-llama-gallery' )[0] ) {
 		function (
 			i,
 			list
-		)
-		{
+		) {
 			let quotes_llama_elements;
 			let quotes_llama_list_class;
 			let quotes_llama_gallery_category;
@@ -459,8 +469,7 @@ if ( jQuery( '.quotes-llama-gallery' )[0] ) {
 				function (
 					i,
 					element
-				)
-				{
+				) {
 					let quotes_llama_this_class;
 					quotes_llama_this_class         = jQuery( element ).attr( 'class' );
 					quotes_llama_list_class.data[i] = quotes_llama_this_class;
@@ -595,7 +604,7 @@ function quotes_llama_move( quotebox, container ) {
 			left: new_left
 		},
 		quotes_llama_transitionspeed,
-		function() {
+		function () {
 
 			// Height of quote.
 			quote_height = jQuery( '.' + quotebox ).outerHeight();
@@ -622,8 +631,7 @@ if ( jQuery( '.quotes-llama-widget-gallery' )[0] ) {
 		function (
 			i,
 			list
-		)
-		{
+		) {
 			let quotes_llama_widget_uid;
 			quotes_llama_widget_uid   = jQuery( list ).attr( 'id' );
 			quotes_llama_widget_cat   = jQuery( list ).attr( 'category' );
@@ -667,8 +675,7 @@ jQuery(
 				div_instance: div_instance,
 				nonce: nonce,
 			},
-			function ( response )
-			{
+			function ( response ) {
 				// Success, fadeout next link.
 				jQuery( '.quotes-llama-' + div_instance + '-next' ).fadeOut( 500 );
 
@@ -753,7 +760,7 @@ function quotes_llama_widget_quote( uid, tuid, cat, nonce ) {
 	if ( cat ) {
 		jQuery.each(
 			quotes_llama_quotes,
-			function( i, q ) {
+			function ( i, q ) {
 
 				// Split quote categories into array.
 				cat_cats = q.category.split( ',' );
@@ -764,7 +771,7 @@ function quotes_llama_widget_quote( uid, tuid, cat, nonce ) {
 				// Cat found so using quote.
 				jQuery.each(
 					cat_kits,
-					function( k, c ) {
+					function ( k, c ) {
 						if ( jQuery.inArray( c, cat_cats ) > -1 ) {
 							quote_use.push( q );
 							return;
@@ -888,12 +895,13 @@ function quotes_llama_widget_quote( uid, tuid, cat, nonce ) {
 				uid
 			);
 
-			// Stop quote.
+			// Stop timer, just to be sure.
 			quotes_llama_stoptimer( tuid );
 
 			// Schedule the next quote.
 			tuid = setInterval(
 				function () {
+					quotes_llama_stoptimer( tuid );
 					quotes_llama_widget_quote( uid, tuid, cat, nonce );
 				},
 				delayTime * 1000
@@ -989,7 +997,7 @@ jQuery( document ).on(
 
 				jQuery( '.quotes-llama-page-quote' ).fadeOut(
 					quotes_llama_transitionspeed,
-					function() {
+					function () {
 						jQuery( '.quotes-llama-page-quote' ).html( quotes );
 
 						// reformat quote if having character limit.
@@ -1071,8 +1079,7 @@ jQuery(
 jQuery(
 	'div.quotes-llama-page-quotes-form'
 ).submit(
-	function ()
-	{
+	function () {
 		let quotesearch;
 		let quotecolumn;
 		let nonce;
@@ -1084,13 +1091,14 @@ jQuery(
 		quotecolumn = jQuery( '.sc' ).val();
 
 		// Get nonce.
-		nonce = jQuery( '.quotes-llama-page-quotesearch' ).attr( 'nonce' );
+		nonce = jQuery( '.quotes-llama-page-token' ).val();
 
+		// Page mode.
 		if ( quotesearch ) {
 			jQuery(
 				'.quotes-llama-page-status'
 			).html(
-				'<div id="quotes-llama-page-status-info" >Searching... ' +
+				'<div>Searching... ' +
 					quotesearch +
 				'</div>'
 			);
@@ -1102,13 +1110,12 @@ jQuery(
 					search_for_quote: 1,
 					term: quotesearch,
 					sc: quotecolumn,
-					nonce: nonce
+					ql_token: nonce
 				},
-				function ( quotes )
-				{
+				function ( quotes ) {
 					jQuery( '.quotes-llama-page-quote' ).fadeOut(
 						quotes_llama_transitionspeed,
-						function() {
+						function () {
 							jQuery( '.quotes-llama-page-quote' ).html( quotes );
 
 							// Reformat quote if having character limit.
@@ -1149,7 +1156,7 @@ jQuery(
 				{
 					scrollTop: jQuery(
 						'.quotes-llama-page-sidebarleft'
-					).offset().top - 40
+					).offset().top - 30
 				},
 				1000
 			);
@@ -1270,8 +1277,7 @@ jQuery(
 jQuery(
 	'div.quotes-llama-search-quotes-form'
 ).submit(
-	function ()
-	{
+	function () {
 		var quotesearch;
 		var quotecolumn;
 		var quotetarget;
@@ -1287,7 +1293,7 @@ jQuery(
 		quotecolumn = jQuery( '.sc' ).val();
 
 		// Get nonce.
-		nonce = jQuery( '.quotes-llama-search-quotesearch' ).attr( 'nonce' );
+		nonce = jQuery( '.quotes-llama-search-token' ).val();
 
 		if ( quotesearch ) {
 
@@ -1310,13 +1316,12 @@ jQuery(
 						target: quotetarget,
 						term: quotesearch,
 						sc: quotecolumn,
-						nonce: nonce
+						ql_token: nonce
 					},
-					function ( quote )
-					{
+					function ( quote ) {
 						jQuery( '.' + quotetarget ).fadeOut(
 							quotes_llama_transitionspeed,
-							function() {
+							function () {
 								jQuery( '.' + quotetarget ).html( quote );
 
 								// Format image.
@@ -1436,6 +1441,9 @@ jQuery.fn.quotes_llama_countdown = function ( duration, mode, uid ) {
 
 		if ( mode == 'gallery' ) {
 
+			// Clear the timer.
+			quotes_llama_stoptimer( gallery_timer[uid] );
+
 			// Set the timer interval.
 			gallery_timer[uid] = setInterval(
 				function () {
@@ -1445,15 +1453,13 @@ jQuery.fn.quotes_llama_countdown = function ( duration, mode, uid ) {
 
 						// Update the timer display.
 						jQuery( '.' + uid + '-countdown' ).html( '<small>' + duration + 's</small>' );
-					} else {
-
-						// Clear the timer display.
-						quotes_llama_stoptimer( gallery_timer[uid] );
-						jQuery( '.' + uid + '-countdown' ).html( '' );
 					}
 				},
 				1000
 			); // Run every second.
+
+			// Clear the display.
+			jQuery( '.' + uid + '-countdown' ).html( '' );
 
 			// Return id of timer instance.
 			return gallery_timer[uid];
@@ -1461,37 +1467,41 @@ jQuery.fn.quotes_llama_countdown = function ( duration, mode, uid ) {
 
 		if ( mode == 'auto' ) {
 
+			// Clear the timer with old uid.
+			quotes_llama_stoptimer( auto_timer[quotes_llama_old_auto_uid] );
+			quotes_llama_old_auto_uid = uid;
+
 			// Set the timer interval.
 			auto_timer[uid] = setInterval(
 				function () {
 
 					// If seconds remain.
-					if ( --duration > 0 ) {
+					if ( --duration > 1 ) {
 
 						// Update the timer display.
 						jQuery( '.' + uid + '-countdown' ).html( '<small>' + duration + 's</small>' );
-					} else {
-
-						// Clear the timer display.
-						quotes_llama_stoptimer( auto_timer[uid] );
-						jQuery( '.' + uid + '-countdown' ).html( '' );
 					}
 				},
 				1000
 			); // Run every second.
+
+			// Clear the display.
+			jQuery( '.' + uid + '-countdown' ).html( '' );
 
 			// Return id of timer instance.
 			return auto_timer[uid];
 		}
 
 		if ( mode == 'widget' ) {
+
+			// Clear the timer.
+			quotes_llama_stoptimer( widget_timer[quotes_llama_old_widget_uid] );
+			quotes_llama_old_widget_uid = uid;
+
 			widget_timer[uid] = setInterval(
 				function () {
 					if ( --duration > 0 ) {
 						jQuery(	'.quotes-llama-' + uid + '-countdown' ).html( '<small>' + duration + 's</small>' );
-					} else {
-						quotes_llama_stoptimer( widget_timer[uid] );
-						jQuery(	'.quotes-llama-' + uid + '-countdown' ).html( '' );
 					}
 				},
 				1000
@@ -1501,7 +1511,7 @@ jQuery.fn.quotes_llama_countdown = function ( duration, mode, uid ) {
 };
 
 /*
- * Gallery and Widget, Stop timer.
+ * Stop Countdown timer.
  *
  * @since 1.0.0
  *
@@ -1649,7 +1659,7 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 	if ( cat ) {
 		jQuery.each(
 			quotes_llama_quotes,
-			function( i, q ) {
+			function ( i, q ) {
 
 				// Split quote categories into array.
 				cat_cats = q.category.split( ',' );
@@ -1660,7 +1670,7 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 				// Cat found so using quote.
 				jQuery.each(
 					cat_kits,
-					function( k, c ) {
+					function ( k, c ) {
 						if ( jQuery.inArray( c, cat_cats ) > -1 ) {
 							quote_use.push( q );
 							return;
@@ -1709,8 +1719,7 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 		).fadeTo(
 			quotes_llama_transitionspeed,
 			0,
-			function()
-			{
+			function () {
 				let rand_quote;
 				let author_icon;
 				let source_icon;
@@ -1807,7 +1816,7 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 					rand_img = '';
 				}
 
-				// If gallery is to loop its quotes.
+				// If to loop quotes.
 				if ( loop ) {
 					let rand_length;
 					let delayTime;
@@ -1832,10 +1841,13 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 						suid = jQuery( '.' + uid + '-countdown' ).quotes_llama_countdown( delayTime, 'auto', uid );
 					}
 
-					// Stop quote timer. Set quote timer to fire a new quote in so many seconds from now.
+					// Stop time just in case.
 					quotes_llama_stoptimer( tuid );
+
+					// Set quote timer to fire a new quote in so many seconds from now.
 					tuid = setInterval(
 						function () {
+							quotes_llama_stoptimer( tuid );
 							quotes_llama_quote(
 								mode,
 								true,
@@ -1996,7 +2008,7 @@ function quotes_llama_css_icons_reformat() {
  *
  * returns string - string with backslashes stripped.
  */
-function quotes_llama_stripslashes ( str ) {
+function quotes_llama_stripslashes( str ) {
 	return (
 		str + ''
 	).replace(
@@ -2098,26 +2110,28 @@ jQuery( '.quotes-llama-page-title, .quotes-llama-page-letter a' ).css( 'color', 
 
 // Make any remaining images round rather than rectangle, if settings allow.
 if ( quotes_llama_borderradius ) {
-	jQuery( '.quotes-llama-widget-random img, .quotes-llama-count-quote img, .quotes-llama-id img, .quotes-llama-all-quote img' ).css( 'border-radius', '50%' );
+	jQuery( '.quotes-llama-url-list img, .quotes-llama-widget-random img, .quotes-llama-count-quote img, .quotes-llama-id img, .quotes-llama-all-quote img' ).css( 'border-radius', '50%' );
 }
 
 // Make remaining images display above the quote, if settings allow. Otherwise float image left.
 if ( quotes_llama_imageattop ) {
-	jQuery( '.quotes-llama-widget-random img, .quotes-llama-count-quote img, .quotes-llama-id img, .quotes-llama-all-quote img' ).css( quotes_llama_css_image_at_top() );
+	jQuery( '.quotes-llama-url-list img, .quotes-llama-widget-random img, .quotes-llama-count-quote img, .quotes-llama-id img, .quotes-llama-all-quote img' ).css( quotes_llama_css_image_at_top() );
 }
 
 // Align remaining quotes and format icons.
-jQuery( '.quotes-llama-widget-random' ).css( quotes_llama_css_align_quote() );
+jQuery( '.quotes-llama-widget-random, .quotes-llama-url-author, .quotes-llama-url-quote' ).css( quotes_llama_css_align_quote() );
 jQuery( '.quotes-llama-icons img' ).css( quotes_llama_css_icons_reformat() );
 
 // Fadeout any messages.
 jQuery( window ).on(
 	'load',
-	function() {
-		if ( jQuery( '.qlmsg' )[0] ) {
+	function () {
+		if ( jQuery( '.qlmsg' ) [0] ) {
 			setTimeout(
-				function() {
-					jQuery( '.qlmsg' ).fadeOut( 1000 );
+				function () {
+					jQuery(
+						'.qlmsg'
+					).fadeOut( 1000 );
 				},
 				5000
 			);

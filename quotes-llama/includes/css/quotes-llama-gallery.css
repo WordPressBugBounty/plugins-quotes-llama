@@ -1,30 +1,52 @@
+/* ================================
+	Quotes Llama – mode='gallery'.
+	=============================== */
+
+/* Wrapper */
 .quotes-llama-gallery {
-	top: 0;
-	transition: height 2s;
-}
-
-.quotes-llama-gallery-quotebox {
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 20px;
+	box-sizing: border-box;
 	position: relative;
-	min-height: 180px;
-	max-width: 45%;
-	padding: 5px;
-	cursor: pointer;
-	transition: height 2s;
-	transition: width 2s;
 }
 
+/* Rotating container */
 .quotes-llama-gallery-rotate {
-	overflow: hidden;
-	transition: height 2s;
+	position: relative;
+	width: 100%;
+	min-height: 200px;
+	padding: 20px;
+	border-radius: 10px;
 }
 
+/* Countdown */
+.quotes-llama-gallery-countdown,
+.quotes-llama-gallery-reenable {
+	font-size: 14px;
+	text-align: right;
+	margin-bottom: 10px;
+	min-height: 25px;
+}
+
+/* Image */
 .quotes-llama-gallery img  {
 	max-width: 150px;
-	max-height: 150px;
+	height: auto;
 	margin-right: 15px;
+	margin-bottom: 15px;
 	border-radius: 5px;
 	box-shadow: 5px 10px 12px 0px rgba(0,0,0,0.75);
 	float: left;
+}
+
+/* Quote */
+.quotes-llama-gallery-quotebox {
+	line-height: 1.5;
+	padding: 20px;
+	border-radius: 6px;
+	min-height: 180px;
 }
 
 .quotes-llama-gallery-author {
@@ -40,85 +62,33 @@
 	font-style: italic;
 }
 
-.quotes-llama-gallery-countdown {
-	float: right;
-	top: 3px;
-	right: 3px;
-	padding-right: 5px;
-}
-
-@media only screen and (max-width: 1920px) {
+/* ------------
+	Responsive
+	----------- */
+@media (max-width: 1024px) {
 	.quotes-llama-gallery-quotebox {
-		max-width: 50%;
-	}
-}
-
-@media only screen and (max-width: 1366px) {
-	.quotes-llama-gallery-quotebox {
-		max-width: 55%;
+		font-size: 0.95rem;
 	}
 
-	.quotes-llama-gallery img {
-		max-width: 138px;
-		max-height: 138px;
-		margin-right: 8px;
-		border-radius: 3px;
-		box-shadow: 3px 7px 9px 0px rgba(0,0,0,0.60);
+	.quotes-llama-gallery-author {
+		font-size: 0.90rem;
+	}
+
+	.quotes-llama-gallery img  {
+		max-width: 120px;
 	}
 }
 
-@media only screen and (max-width: 1080px) {
+@media (max-width: 800px) {
 	.quotes-llama-gallery-quotebox {
-		max-width: 60%;
+		font-size: 0.90rem;
 	}
 
-	.quotes-llama-gallery img {
-		max-width: 115px;
-		max-height: 115px;
-		margin-right: 14px;
-		border-radius: 3px;
-		box-shadow: 3px 7px 9px 0px rgba(0,0,0,0.60);
-	}
-}
-
-@media only screen and (max-width: 768px) {
-	.quotes-llama-gallery-quotebox {
-		max-width: 70%;
+	.quotes-llama-gallery-author {
+		font-size: 0.85rem;
 	}
 
-	.quotes-llama-gallery img {
+	.quotes-llama-gallery img  {
 		max-width: 90px;
-		max-height: 90px;
-		margin-right: 13px;
-		border-radius: 2px;
-		box-shadow: 2px 5px 6px 0px rgba(0,0,0,0.40);
-	}
-}
-
-@media only screen and (max-width: 360px) {
-	.quotes-llama-gallery-quotebox {
-		max-width: 80%;
-	}
-
-	.quotes-llama-gallery img {
-		max-width: 65px;
-		max-height: 65px;
-		margin-right: 12px;
-		border-radius: 2px;
-		box-shadow: 2px 5px 6px 0px rgba(0,0,0,0.30);
-	}
-}
-
-@media only screen and (max-width: 240px) {
-	.quotes-llama-gallery-quotebox {
-		max-width: 90%;
-	}
-
-	.quotes-llama-gallery img {
-		max-width: 45px;
-		max-height: 45px;
-		margin-right: 11px;
-		border-radius: 2px;
-		box-shadow: 2px 5px 6px 0px rgba(0,0,0,0.30);
 	}
 }

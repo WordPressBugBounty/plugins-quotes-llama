@@ -31,8 +31,8 @@ if ( wp_verify_nonce( $quotes_llama_nonce, 'llama_admin_delete_bulk' ) ) {
 	if ( isset( $_GET['bulkcheck'] ) ) { // Sanitizes each value below. Generates phpcs error.
 		$quotes_llama_checks    = $_GET['bulkcheck']; // phpcs:ignore
 		$quotes_llama_bulkcheck = array();
-		foreach ( $quotes_llama_checks as $quotes_llama_key => $quotes_llama_val ) {
-			$quotes_llama_bulkcheck[ $quotes_llama_key ] = ( isset( $checks[ $quotes_llama_key ] ) ) ? sanitize_text_field( wp_unslash( $quotes_llama_val ) ) : '';
+		foreach ( $quotes_llama_checks as $quotes_llama_val ) {
+			$quotes_llama_bulkcheck[] = sanitize_text_field( wp_unslash( $quotes_llama_val ) );
 		}
 
 		$quotes_llama_bd = $quotes_llama_delete->quotes_delete_bulk( $quotes_llama_bulkcheck );

@@ -1794,8 +1794,8 @@ class QuotesLlama_Admin {
 				</form>
 
 				<?php
-				// Delete database table... Administrator only.
-				if ( current_user_can( 'administrator' ) ) {
+				// Delete database table... install_plugins capability.
+				if ( current_user_can( 'install_plugins' ) ) {
 					?>
 					<form method='post' onsubmit="return quotes_llama_change_table_confirm()" action='<?php echo esc_url( get_bloginfo( 'wpurl' ) ); ?>/wp-admin/admin.php?page=quotes-llama'> 
 						<?php
@@ -1933,6 +1933,15 @@ class QuotesLlama_Admin {
 						</td>
 						<td>
 							<?php esc_html_e( 'Random quote from a category that will auto-refresh.', 'quotes-llama' ); ?>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b><code>[quotes-llama mode='url']</code></b>
+						</td>
+						<td>
+							<?php esc_html_e( 'Display an authors quotes from a URL.', 'quotes-llama' ); ?>
+							<?php esc_html_e( 'e.g. yoursite.com/yourpage/?first=John&last=Doe', 'quotes-llama' ); ?>
 						</td>
 					</tr>
 					<tr>
@@ -2102,6 +2111,15 @@ class QuotesLlama_Admin {
 							</td>
 							<td>
 								<?php esc_html_e( 'Random quote from a category that will auto-refresh.', 'quotes-llama' ); ?>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<b><code>do_shortcode( "[quotes-llama mode='url']" );</code></b>
+							</td>
+							<td>
+								<?php esc_html_e( 'Display an authors quotes from a URL.', 'quotes-llama' ); ?>
+								<?php esc_html_e( 'e.g. yoursite.com/yourpage/?first=John&last=Doe', 'quotes-llama' ); ?>
 							</td>
 						</tr>
 						<tr>

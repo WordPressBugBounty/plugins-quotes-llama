@@ -1,37 +1,13 @@
-.quotes-llama-page-quote {
-	float: right;
-	width: 68%;
-	text-align: left;
-	min-height: 1px;
-	margin-top: 20px;
-}
+/* =============================
+	Quotes Llama – mode='page'.
+	============================ */
 
-.quotes-llama-page-quote img  {
-	max-width: 150px;
-	max-height: 150px;
-	object-fit: cover;
-	margin-right: 15px;
-	margin-bottom: 15px;
-	border-radius: 5px;
-	box-shadow: 5px 10px 12px 0px rgba(0,0,0,0.75);
-	float: left;
-}
-
+/* Wrapper */
 .quotes-llama-page-container {
 	width: 100%;
 }
 
-.quotes-llama-page-container,
-.quotes-llama-page-fixed-anchor {
-	margin: 0;
-	display: block;
-	top: -35px;
-}
-
-.quotes-llama-page-container hr {
-	clear: left;
-}
-
+/* Sidebar */
 .quotes-llama-page-sidebarleft {
 	float: left;
 	width: 28%;
@@ -44,7 +20,68 @@
 	list-style-type: none;
 }
 
-.quotes-llama-page-title,
+/* Output Area */
+.quotes-llama-page-quote {
+	float: right;
+	width: 68%;
+	text-align: left;
+	min-height: 1px;
+	margin-top: 20px;
+}
+
+.quotes-llama-page-status {
+	float: right;
+	width: 68%;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+/* ========
+	Search
+	======= */
+.quotes-llama-page-quotes-form {
+	padding: 15px 20px;
+	border-radius: 6px;
+	margin-bottom: 20px;
+}
+
+.quotes-llama-page-quotes-form form {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+}
+
+.quotes-llama-page-quotesearch {
+	padding: 8px 12px;
+	min-width: 200px;
+	max-width: 250px;
+	flex-grow: 1;
+}
+
+.quotes-llama-page-quotes-form select.sc {
+	padding: 8px 12px;
+	max-width: 150px;
+}
+
+.quotes-llama-page-searchbutton {
+	border: 1px solid;
+	padding: 8px 16px;
+}
+
+/* ============
+	Navigation
+	=========== */
+.quotes-llama-page-title {
+	font-size: 1.25rem;
+	font-weight: 700;
+	margin-bottom: 15px;
+	padding-left: 15px;
+	padding-right: 8px;
+	padding-bottom: 8px;
+	text-align: center;
+}
+
 .quotes-llama-page-navdiv {
 	width: 100%;
 	margin-left: auto;
@@ -58,11 +95,7 @@
 	margin-bottom: 2px;
 }
 
-.quotes-llama-page-previous,
-.quotes-llama-page-next {
-	text-align: center;
-}
-
+/* Sidebar Letter Separators */
 .quotes-llama-page-letter {
 	width: 100%;
 	margin-left: auto;
@@ -71,32 +104,68 @@
 	margin-top: 10px;
 }
 
+/* Anchor */
+.quotes-llama-page-fixed-anchor {
+	display: block;
+	position: relative;
+	top: -20px; 
+	visibility: hidden;
+}
+
+/* Authors */
+.quotes-llama-page-sidebarleft li {
+	list-style: none;
+	margin: 0;
+	padding: 4px 0;
+}
+
 .quotes-llama-page-link {
 	text-decoration: none;
 	word-wrap: break-word;
 }
 
-.quotes-llama-page-quotes-form {
-	float: none;
-	padding: 5px 10px 5px 10px;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	clear: both;
+/* Buttons */
+.quotes-llama-page-navdiv button,
+.quotes-llama-page-sidebarleft a button {
+	border-radius: 4px;
+	padding: 4px 8px;
+	font-size: 0.85rem;
 }
 
-.quotes-llama-page-quotesearch {
-	max-width: 250px;
+/* ========
+	Quotes
+	======= */
+
+/* Quote */
+.quotes-llama-page-quotebox {
+	position: relative;
+	margin-bottom: 12px;
+	line-height: 1.6;
 }
 
-.sc {
+/* Image */
+.quotes-llama-page-quotebox img {
 	max-width: 150px;
+	max-height: 150px;
+	object-fit: cover;
+	margin-right: 15px;
+	margin-bottom: 15px;
+	border-radius: 5px;
+	box-shadow: 5px 10px 12px 0px rgba(0,0,0,0.75);
+	float: left;
 }
 
-.quotes-llama-page-quotes-form select {
-	margin-right: 3px;
-	margin-left: 3px;
+.quotes-llama-page-quotebox::after {
+	content: "";
+	clear: both;
+	display: table;
 }
 
+.quotes-llama-page-quote-more {
+	font-size: 1.05rem;
+}
+
+/* Source */
 .quotes-llama-page-source {
 	display: block;
 	text-align: right;
@@ -104,98 +173,63 @@
 	font-style: italic;
 }
 
-.quotes-llama-page-author-back {
-	float: right;
-	padding-left: 3px;
-	text-decoration:none;
-}
-
-.quotes-llama-page-quotebox {
-	padding: 5px;
-}
-
+/* ======================
+	Print & Back Buttons
+	===================== */
 .quotes-llama-inline {
 	display: inline-block;
 	width: 100%;
 	text-align: center;
 }
 
-#quotes-llama-page-status-info {
-	float: left;
-	padding-left: 10px;
+.quotes-llama-page-author-back input[type="button"],
+input.quotes-llama-print {
+	padding: 6px 16px;
+	font-weight: 500;
 }
 
-/*---------------------------------
-			RESPONSIVE
-----------------------------------*/
-@media only screen and (max-width: 800px) {
-	.quotes-llama-page-title a button {
-		margin: 1px;
-		padding: 1px;
-		opacity: 1;
+/* ------------
+	Responsive
+	----------- */
+@media (max-width: 1024px) {
+	.quotes-llama-page-quote-more {
+		font-size: 1.0rem;
+	}
+
+	.quotes-llama-page-quotebox img  {
+		max-width: 120px;
 	}
 }
 
-@media only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
-	.quotes-llama-page-container {
-		margin-top: 40px;
+@media (max-width: 800px) {
+	.quotes-llama-page-quote-more {
+		font-size: 0.95rem;
 	}
 
-	.quotes-llama-page-author-back {
-		display: none;
-	}
-}
-
-@media only screen and (max-width: 1920px) {
-
-}
-
-@media only screen and (max-width: 1366px) {
-	.quotes-llama-page-quote img {
-		max-width: 138px;
-		max-height: 138px;
-		margin-right: 8px;
-		border-radius: 3px;
-		box-shadow: 3px 7px 9px 0px rgba(0,0,0,0.60);
-	}
-}
-
-@media only screen and (max-width: 1080px) {
-	.quotes-llama-page-quote img {
-		max-width: 115px;
-		max-height: 115px;
-		margin-right: 14px;
-		border-radius: 3px;
-		box-shadow: 3px 7px 9px 0px rgba(0,0,0,0.60);
-	}
-}
-
-@media only screen and (max-width: 768px) {
-	.quotes-llama-page-quote img {
+	.quotes-llama-page-quotebox img  {
 		max-width: 90px;
-		max-height: 90px;
-		margin-right: 13px;
-		border-radius: 2px;
-		box-shadow: 2px 5px 6px 0px rgba(0,0,0,0.40);
 	}
 }
 
-@media only screen and (max-width: 360px) {
-	.quotes-llama-page-quote img {
-		max-width: 65px;
-		max-height: 65px;
-		margin-right: 12px;
-		border-radius: 2px;
-		box-shadow: 2px 5px 6px 0px rgba(0,0,0,0.30);
+/* =======
+	Print
+	====== */
+@media print {
+	/* Hide navigational elements during print */
+	.quotes-llama-page-sidebarleft,
+	.quotes-llama-page-quotes-form,
+	.quotes-llama-page-author-back,
+	.quotes-llama-page-navdiv,
+	button {
+		display: none !important;
 	}
-}
-
-@media only screen and (max-width: 240px) {
-	.quotes-llama-page-quote img {
-		max-width: 45px;
-		max-height: 45px;
-		margin-right: 11px;
-		border-radius: 2px;
-		box-shadow: 2px 5px 6px 0px rgba(0,0,0,0.30);
+    
+	.quotes-llama-page-container,
+	#quotes-llama-printquote {
+		display: block !important;
+		width: 100% !important;
+		border: none !important;
+		box-shadow: none !important;
+		padding: 0 !important;
 	}
 }

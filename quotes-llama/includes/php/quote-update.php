@@ -51,7 +51,7 @@ if ( check_admin_referer( 'quotes_llama_form_nonce', 'quotes_llama_form_nonce' )
 	$quotes_llama_source_icon = isset( $_POST['source_icon'] ) ? sanitize_text_field( wp_unslash( $_POST['source_icon'] ) ) : $this->check_option( 'source_icon' );
 	$quotes_llama_category    = isset( $_POST['ql_category'] ) ? map_deep( wp_unslash( $_POST['ql_category'] ), 'sanitize_text_field' ) : array();
 	$quotes_llama_category    = implode( ', ', $quotes_llama_category );
-	$this->msg   = $quotes_llama_update->ql_update( $quotes_llama_quote_id, $quotes_llama_quote, $quotes_llama_title_name, $quotes_llama_first_name, $quotes_llama_last_name, $quotes_llama_source, $quotes_llama_img_url, $quotes_llama_author_icon, $quotes_llama_source_icon, $quotes_llama_category );
+	$this->msg                = $quotes_llama_update->ql_update( $quotes_llama_quote_id, $quotes_llama_quote, $quotes_llama_title_name, $quotes_llama_first_name, $quotes_llama_last_name, $quotes_llama_source, $quotes_llama_img_url, $quotes_llama_author_icon, $quotes_llama_source_icon, $quotes_llama_category );
 } else {
 	$this->msg = $this->message( '', 'nonce' );
 }

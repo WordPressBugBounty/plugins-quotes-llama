@@ -25,7 +25,6 @@ class QuotesLlama_ID {
 	 * @access public
 	 */
 	public function __construct() {
-
 	}
 
 	/**
@@ -142,7 +141,7 @@ class QuotesLlama_ID {
 		// Build and return our div.
 		return '<div class="quotes-llama-id">' .
 			$image .
-			'<span class="quotes-llama-widget-more">' .
+			'<span class="quotes-llama-widget-more quotes-llama-id-span">' .
 				wp_kses_post( $ql->clickable( nl2br( $isquote ) ) ) .
 			'</span>' .
 			wp_kses_post( $ql->clickable( $author_source ) ) .

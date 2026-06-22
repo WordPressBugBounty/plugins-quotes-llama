@@ -25,7 +25,6 @@ class QuotesLlama_Update {
 	 * @access public
 	 */
 	public function __construct() {
-
 	}
 
 	/**

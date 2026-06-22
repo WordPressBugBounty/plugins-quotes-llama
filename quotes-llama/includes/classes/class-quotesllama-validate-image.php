@@ -25,7 +25,6 @@ class QuotesLlama_Validate_Image {
 	 * @access public
 	 */
 	public function __construct() {
-
 	}
 
 	/**

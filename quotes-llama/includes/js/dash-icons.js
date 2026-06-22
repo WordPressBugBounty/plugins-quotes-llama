@@ -18,8 +18,7 @@ jQuery(
 ).on(
 	'click',
 	'.quotes-llama-icons-source a, .quotes-llama-icons-author a',
-	function(event)
-	{
+	function (event) {
 		// Get clicked element data.
 		this_span = jQuery( this );
 
@@ -45,8 +44,7 @@ jQuery(
 ).on(
 	'change',
 	'#quotes-llama-icons-source-select input',
-	function()
-	{
+	function () {
 		let source_selection = jQuery( '.quotes-llama-icons-source-sel' ); // Get selection element data.
 		let source_icon      = this.value; // Selection made.
 		let png              = source_icon.includes( '.png' ); // If .png.
@@ -71,7 +69,7 @@ jQuery(
 		jQuery( '#source_icon' ).val( source_icon );
 
 		// Click arrow to toggle and close drop-list box.
-		jQuery( '.quotes-llama-icons-source a' ).click(); 
+		jQuery( '.quotes-llama-icons-source a' ).click();
 	}
 );
 
@@ -83,8 +81,7 @@ jQuery(
 ).on(
 	'change',
 	'#quotes-llama-icons-author-select input',
-	function()
-	{
+	function () {
 		let author_selection = jQuery( '.quotes-llama-icons-author-sel' );
 		let author_icon      = this.value;
 		let png              = author_icon.includes( '.png' );

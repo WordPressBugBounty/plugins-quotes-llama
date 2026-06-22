@@ -160,7 +160,7 @@ class QuotesLlama_Table {
 			 *
 			 * @param array $actions An array of the available bulk actions.
 			 */
-			$this->actions_b = apply_filters( "bulk_actions_{$this->screen->id}", $this->actions_b );
+			$this->actions_b = apply_filters( "quotes_llama_bulk_actions_{$this->screen->id}", $this->actions_b );
 			$this->actions_b = array_intersect_assoc( $this->actions_b, $no_new_actions );
 			$two             = '';
 		} else {
@@ -259,12 +259,11 @@ class QuotesLlama_Table {
 	 * @since 1.0.0
 	 * @access private
 	 *
-	 * @param array  $item   -  Table row.
-	 * @param string $nonce  - Nonce.
+	 * @param array $item - Table row.
 	 *
 	 * @return string - Checkbox html.
 	 */
-	private function column_cb( $item, $nonce = '' ) {
+	private function column_cb( $item ) {
 		return sprintf( '<input type="checkbox" name="bulkcheck[]" value="%s">', $item['quote_id'] );
 	}
 
@@ -301,12 +300,11 @@ class QuotesLlama_Table {
 	 * @since 1.2.0
 	 * @access private
 	 *
-	 * @param array  $item   - Table row.
-	 * @param string $nonce  - Nonce.
+	 * @param array $item - Table row.
 	 *
 	 * @return string - First name.
 	 */
-	private function column_titlename( $item, $nonce = '' ) {
+	private function column_titlename( $item ) {
 		$allowed_html = $this->ql->allowed_html( 'qform' );
 		if ( $item['author_icon'] ) {
 			$author_icon = $this->ql->show_icon( $item['author_icon'] );
@@ -325,12 +323,11 @@ class QuotesLlama_Table {
 	 * @since 1.0.0
 	 * @access private
 	 *
-	 * @param array  $item   - Table row.
-	 * @param string $nonce  - Nonce.
+	 * @param array $item - Table row.
 	 *
 	 * @return string - First name.
 	 */
-	private function column_firstname( $item, $nonce = '' ) {
+	private function column_firstname( $item ) {
 		return esc_html( $item['first_name'] );
 	}
 
@@ -340,12 +337,11 @@ class QuotesLlama_Table {
 	 * @since 1.0.0
 	 * @access private
 	 *
-	 * @param array  $item   - Table row.
-	 * @param string $nonce  - Nonce.
+	 * @param array $item - Table row.
 	 *
 	 * @return string - Last name.
 	 */
-	private function column_lastname( $item, $nonce = '' ) {
+	private function column_lastname( $item ) {
 		return esc_html( $item['last_name'] );
 	}
 
@@ -355,12 +351,11 @@ class QuotesLlama_Table {
 	 * @since 1.0.0
 	 * @access private
 	 *
-	 * @param array  $item   - Table row.
-	 * @param string $nonce  - Nonce.
+	 * @param array $item - Table row.
 	 *
 	 * @return string - Quote source.
 	 */
-	private function column_source( $item, $nonce = '' ) {
+	private function column_source( $item ) {
 		$source_icon  = $this->ql->show_icon( $item['source_icon'] );
 		$allowed_html = $this->ql->allowed_html( 'qform' );
 		if ( $item['source_icon'] ) {
@@ -379,12 +374,11 @@ class QuotesLlama_Table {
 	 * @since 1.4.0
 	 * @access private
 	 *
-	 * @param array  $item   - Table row.
-	 * @param string $nonce  - Nonce.
+	 * @param array $item - Table row.
 	 *
 	 * @return string - Last name.
 	 */
-	private function column_category( $item, $nonce = '' ) {
+	private function column_category( $item ) {
 		return esc_html( $item['category'] );
 	}
 
@@ -394,12 +388,11 @@ class QuotesLlama_Table {
 	 * @since 1.0.0
 	 * @access private
 	 *
-	 * @param array  $item   -  Table row.
-	 * @param string $nonce  - Nonce.
+	 * @param array $item - Table row.
 	 *
 	 * @return string - linked image html.
 	 */
-	private function column_img( $item, $nonce = '' ) {
+	private function column_img( $item ) {
 		$allowed_html = $this->ql->allowed_html( 'image' );
 
 		if ( $item['img_url'] ) {
@@ -593,7 +586,7 @@ class QuotesLlama_Table {
 		 *
 		 * @param array $sortable_columns An array of sortable columns.
 		 */
-		$_sortable = apply_filters( "manage_{$this->screen->id}_sortable_columns", $sortable_columns );
+		$_sortable = apply_filters( "quotes_llama_manage_{$this->screen->id}_sortable_columns", $sortable_columns );
 		$sortable  = array();
 
 		foreach ( $_sortable as $id => $data ) {
@@ -894,7 +887,7 @@ class QuotesLlama_Table {
 						$wpdb->prepare(
 							'SELECT * FROM ' .
 							$wpdb->prefix .
-							'quotes_llama WHERE %1s LIKE %s', // phpcs:ignore
+							'quotes_llama WHERE %i LIKE %s', // phpcs:ignore
 							$search_column,
 							$like
 						),
@@ -931,7 +924,12 @@ class QuotesLlama_Table {
 					)
 				);
 			} else {
-				echo '<p class="quotes-llama-table-error">Database table cannot be found! Reactivate or reinstall the plugin to create the table.</p>';
+				echo "<div class='quotes-llama-table-error'>
+					<div class='quotes-llama-table-error-text-container'>
+						<h4 class='quotes-llama-table-error-title'>Database table cannot be found!</h4>
+						<p class='quotes-llama-table-error-description'>Reactivate or reinstall the plugin to create the table.</p>
+					</div>
+				</div>";
 			}
 		}
 	}
@@ -975,7 +973,7 @@ class QuotesLlama_Table {
 						static $cb_counter = 1;
 						$columns['cb']     = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . esc_html__( 'Select All', 'quotes-llama' ) . '</label>'
 							. '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
-						$cb_counter++;
+						++$cb_counter;
 					}
 
 					foreach ( $columns as $column_key => $column_display_name ) {
@@ -1121,7 +1119,7 @@ class QuotesLlama_Table {
 							<?php
 							if ( 'title_name' === $sc ) {
 								echo ' selected';
-							};
+							}
 							?>
 						>
 						<?php esc_html_e( 'Title', 'quotes-llama' ); ?>
@@ -1130,7 +1128,7 @@ class QuotesLlama_Table {
 							<?php
 							if ( 'first_name' === $sc ) {
 								echo ' selected';
-							};
+							}
 							?>
 						>
 							<?php esc_html_e( 'First Name', 'quotes-llama' ); ?>
@@ -1139,7 +1137,7 @@ class QuotesLlama_Table {
 							<?php
 							if ( 'last_name' === $sc ) {
 								echo ' selected';
-							};
+							}
 							?>
 						>
 							<?php esc_html_e( 'Last Name', 'quotes-llama' ); ?>
@@ -1148,7 +1146,7 @@ class QuotesLlama_Table {
 							<?php
 							if ( 'source' === $sc ) {
 								echo ' selected';
-							};
+							}
 							?>
 						>
 							<?php esc_html_e( 'Source', 'quotes-llama' ); ?>
@@ -1156,7 +1154,7 @@ class QuotesLlama_Table {
 							<?php
 							if ( 'category' === $sc ) {
 								echo ' selected';
-							};
+							}
 							?>
 						>
 							<?php esc_html_e( 'Category', 'quotes-llama' ); ?>

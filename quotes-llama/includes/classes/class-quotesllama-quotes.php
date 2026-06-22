@@ -25,7 +25,6 @@ class QuotesLlama_Quotes {
 	 * @access public
 	 */
 	public function __construct() {
-
 	}
 
 	/**
@@ -188,7 +187,7 @@ class QuotesLlama_Quotes {
 
 				$qlreturn .= '<div id="' . esc_attr( $div_instance ) . '" class="quotes-llama-count-quote widget-text wp_widget_plugin_box">' .
 					$image .
-					'<span class="quotes-llama-widget-more">' .
+					'<span class="quotes-llama-widget-more quotes-llama-count-span">' .
 						wp_kses_post( $ql->clickable( nl2br( $isquote ) ) ) .
 					'</span>' .
 					$author_source .
@@ -280,7 +279,7 @@ class QuotesLlama_Quotes {
 
 			$qlreturn .= '<div id="' . esc_attr( $div_instance ) . '" class="quotes-llama-count-quote widget-text wp_widget_plugin_box">' .
 				$image .
-				'<span class="quotes-llama-widget-more">' .
+				'<span class="quotes-llama-widget-more quotes-llama-count-span">' .
 					wp_kses_post( $ql->clickable( nl2br( $isquote ) ) ) .
 				'</span>' .
 				$author_source .

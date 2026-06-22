@@ -1,0 +1,110 @@
+/* ===================
+	Quotes Llama – URL
+	=================== */
+
+/* Wrapper */
+.quotes-llama-url-list {
+	max-width: 700px;
+	list-style: none;
+	margin: 20px 0;
+	padding: 0;
+}
+
+/* Author */
+.quotes-llama-url-author {
+	display: block;
+	font-size: 1.3rem;
+	font-weight: 600;
+	margin-bottom: 15px;
+	margin-left: 20px;
+	padding-left: 10px;
+}
+
+/* Image */
+.quotes-llama-url-img {
+	max-width: 150px;
+	height: auto;
+	object-fit: cover;
+	margin-right: 10px;
+	margin-left: 20px;
+}
+
+/* Quote li */
+.quotes-llama-url-list li {
+	margin-bottom: 20px;
+	padding: 10px 15px;
+	border-radius: 6px;
+}
+
+/* Quote text */
+.quotes-llama-url-quote {
+	margin: 0;
+	position: relative;
+	padding-left: 25px;
+}
+
+/* ============
+	Responsive
+	============ */
+
+@media (max-width: 1298px) {
+	.quotes-llama-url-list {
+		padding: 20px;
+	}
+
+	.quotes-llama-url-img {
+		width: 75px;
+		height: 75px;
+	}
+
+	.quotes-llama-url-span {
+		font-size: 1.05rem;
+	}
+
+	.quotes-llama-url-author {
+		font-size: 1.2rem;
+	}
+}
+
+@media (max-width: 768px) {
+	.quotes-llama-url-list {
+		padding: 20px;
+	}
+
+	.quotes-llama-url-img {
+		width: 75px;
+		height: 75px;
+	}
+
+	.quotes-llama-url-span {
+		font-size: 1.1rem;
+	}
+
+	.quotes-llama-url-author {
+		font-size: 1.3rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.quotes-llama-url-author {
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.quotes-llama-url-img {
+		margin-bottom: 10px;
+	}
+
+	.quotes-llama-url-quote {
+		flex-direction: column;
+		text-align: left;
+	}
+
+	.quotes-llama-url-span {
+		font-size: 1.15rem;
+	}
+
+	.quotes-llama-url-list {
+		padding: 18px;
+	}
+}

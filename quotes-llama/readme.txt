@@ -2,9 +2,9 @@
 Contributors: oooorgle
 Donate link: http://oooorgle.com/plugins/wp/quotes-llama/
 Tags: Quote, Think, Share
-Requires at least: 4.4.0
+Requires at least: 6.2.0
 Tested up to: 7.0
-Stable tag: 3.1.5
+Stable tag: 3.1.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -160,6 +160,10 @@ Short-codes are informational and for example only. Depending on your encoding, 
 * Display a random quote from a category that will auto-refresh.
 **[quotes-llama mode='auto' cat='category']**
 
+* Display an Authors quotes from a URL.
+**[quotes-llama mode='url']**
+**e.g. yoursite.com/yourpage/?first=John&last=Doe**
+
 * Display static quotes.
 **[quotes-llama id='#,#,#']**
 
@@ -209,6 +213,10 @@ Short-codes are informational and for example only. Depending on your encoding, 
 * Display a random quote from a category that will auto-refresh.
 **do_shortcode( "[quotes-llama mode='auto' cat='category']" );**
 
+* Display an Authors quotes from a URL.
+**do_shortcode( "[quotes-llama mode='url']" );****
+**e.g. yoursite.com/yourpage/?first=John&last=Doe**
+
 * Display static quotes.
 **do_shortcode( "[quotes-llama id='#,#,#']" );**
 
@@ -248,7 +256,6 @@ Short-codes are informational and for example only. Depending on your encoding, 
 * [Version History](https://oooorgle.com/downloads/quotes-llama/dev/versions.htm)
 
 == Screenshots ==
-1. Admin
-2. Gallery
-3. Widget
-4. Page
+1. Administration.
+2. Page of Authors.
+3. Widget.

@@ -25,7 +25,6 @@ class QuotesLlama_Auto {
 	 * @access public
 	 */
 	public function __construct() {
-
 	}
 
 	/**

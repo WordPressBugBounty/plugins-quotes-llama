@@ -25,7 +25,6 @@ class QuotesLlama_Delete {
 	 * @access public
 	 */
 	public function __construct() {
-
 	}
 
 	/**

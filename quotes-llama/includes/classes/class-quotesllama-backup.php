@@ -140,7 +140,6 @@ class QuotesLlama_Backup {
 	 * Get data for .json and create the file.
 	 *
 	 * @param string $nonce - nonce.
-	 * @param bool   $file  - To create quote file.
 	 *
 	 * @since 1.0.0
 	 * @access public
@@ -295,7 +294,7 @@ class QuotesLlama_Backup {
 							while ( ( $row = fgetcsv( $handle, 2000, $this->separator ) ) !== false ) { // phpcs:ignore
 
 								// Check count of $row.
-								if ( count( $row ) === 7 ) {
+								if ( count( $row ) === 8 ) {
 									fclose( $handle ); // phpcs:ignore
 									return esc_html__(
 										'There was an error. Verification returned on line ',
@@ -306,37 +305,35 @@ class QuotesLlama_Backup {
 										'. Be sure the csv delimiter in the options tab is set to match your file. Your files encoding may not be supported. Improper file structure such as incorrect columns and fields can cause the import to fail as well.',
 										'quotes-llama'
 									);
-								} else {
+								} elseif ( ! $header ) {
 
 									// Combine our header and data. Assign first row data to header columns [header][row].
-									if ( ! $header ) {
-										$header = $row;
-										for ( $i = 0; $i <= 7; $i++ ) {
+									$header = $row;
+									for ( $i = 0; $i <= 8; $i++ ) {
 
-											// CSV in utf8 might have BOM characters in the headers. Remove BOM characters.
-											$header[ $i ] = preg_replace( '/[\x00-\x1F\x80-\xFF]/', '', $header[ $i ] );
+										// CSV in utf8 might have BOM characters in the headers. Remove BOM characters.
+										$header[ $i ] = preg_replace( '/[\x00-\x1F\x80-\xFF]/', '', $header[ $i ] );
 
-											// Sanitize header.
-											$header[ $i ] = sanitize_text_field( $header[ $i ] );
-										}
-									} else {
-
-										for ( $i = 0; $i <= 7; $i++ ) {
-											$allowed_html = $this->allowed_html( 'style' );
-
-											// Filter the row for allowed html tags.
-											if ( isset( $row[ $i ] ) ) {
-												$row[ $i ] = wp_check_invalid_utf8( wp_unslash( $row[ $i ] ) );
-												$row[ $i ] = wp_kses( trim( $row[ $i ] ), $allowed_html );
-											} else {
-
-												// if no data in row.
-												$row[ $i ] = '';
-											}
-										}
-
-										$quote_entries[] = array_combine( $header, $row );
+										// Sanitize header.
+										$header[ $i ] = sanitize_text_field( $header[ $i ] );
 									}
+								} else {
+
+									for ( $i = 0; $i <= 8; $i++ ) {
+										$allowed_html = $this->allowed_html( 'style' );
+
+										// Filter the row for allowed html tags.
+										if ( isset( $row[ $i ] ) ) {
+											$row[ $i ] = wp_check_invalid_utf8( wp_unslash( $row[ $i ] ) );
+											$row[ $i ] = wp_kses( trim( $row[ $i ] ), $allowed_html );
+										} else {
+
+											// if no data in row.
+											$row[ $i ] = '';
+										}
+									}
+
+									$quote_entries[] = array_combine( $header, $row );
 								}
 
 								++$count;

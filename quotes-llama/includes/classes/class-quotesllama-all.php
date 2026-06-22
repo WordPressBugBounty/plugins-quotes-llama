@@ -25,7 +25,6 @@ class QuotesLlama_All {
 	 * @access public
 	 */
 	public function __construct() {
-
 	}
 
 	/**
@@ -43,16 +42,16 @@ class QuotesLlama_All {
 	public function ql_all( $sort, $cat, $limit, $nonce ) {
 		global $wpdb;
 
-		// Instance of parent class.
-		$ql = new QuotesLlama();
-
-		// bool Center image above quote.
-		$image_at_top = $ql->check_option( 'image_at_top' );
-
-		// bool Make image round border.
-		$border_radius = $ql->check_option( 'border_radius' );
-
 		if ( wp_verify_nonce( $nonce, 'quotes_llama_all' ) ) {
+
+			// Instance of parent class.
+			$ql = new QuotesLlama();
+
+			// bool Center image above quote.
+			$image_at_top = $ql->check_option( 'image_at_top' );
+
+			// bool Make image round border.
+			$border_radius = $ql->check_option( 'border_radius' );
 
 			// Enqueue conditional css.
 			$ql->css_conditionals();
@@ -65,6 +64,7 @@ class QuotesLlama_All {
 
 			// Uses Ajax if center image, text, or limiting quote.
 			if ( $image_at_top || $border_radius || $char_limit ) {
+				$ql->scripts_localize_js();
 				wp_enqueue_script( 'quotesllamaAjax' );
 			}
 
@@ -200,7 +200,7 @@ class QuotesLlama_All {
 				}
 
 				// The quote.
-				$all_return .= '<span class="quotes-llama-widget-more">';
+				$all_return .= '<span class="quotes-llama-widget-more quotes-llama-all-span">';
 				$all_return .= wp_kses_post( $ql->clickable( nl2br( $quote['quote'] ) ) );
 				$all_return .= '</span>';
 

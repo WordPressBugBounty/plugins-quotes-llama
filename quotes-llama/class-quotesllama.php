@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Quotes llama
  * Plugin URI:  https://oooorgle.com/plugins/wp/quotes-llama/
- * Version:     3.1.5
+ * Version:     3.1.6
  * Description: Share the thoughts that mean the most... display your quotes in blocks, widgets, pages, templates, galleries or posts.
  * Author:      oooorgle
  * Author URI:  https://oooorgle.com/plugins/wp/quotes-llama/
@@ -26,7 +26,7 @@ defined( 'QL_URL' ) || define( 'QL_URL', plugin_dir_url( __FILE__ ) );
 defined( 'QL_PATH' ) || define( 'QL_PATH', plugin_dir_path( __FILE__ ) );
 
 // Plugin versions.
-defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.5' );
+defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.6' );
 defined( 'QL_DB_VERSION' ) || define( 'QL_DB_VERSION', '2.0.1' );
 
 /**
@@ -569,7 +569,7 @@ class QuotesLlama {
 				'SELECT
 				quote_id,
 				category FROM ' . $wpdb->prefix . 'quotes_llama' .
-				' WHERE category LIKE %s', // phpcs:ignore
+				' WHERE category LIKE %s',
 				$like
 			)
 		);
@@ -678,12 +678,12 @@ class QuotesLlama {
 				preg_match( '|^<pre[\s>]|i', $piece ) ||
 				preg_match( '|^<script[\s>]|i', $piece ) ||
 				preg_match( '|^<style[\s>]|i', $piece ) ) {
-					$nested_code_pre++;
+					++$nested_code_pre;
 			} elseif ( $nested_code_pre && ( '</code>' === strtolower( $piece ) ||
 				'</pre>' === strtolower( $piece ) ||
 				'</script>' === strtolower( $piece ) ||
 				'</style>' === strtolower( $piece ) ) ) {
-				$nested_code_pre--;
+				--$nested_code_pre;
 			}
 
 			if ( $nested_code_pre ||
@@ -1206,7 +1206,7 @@ class QuotesLlama {
 		 * @param string $rel The rel value.
 		 * @param string $url The matched URL being converted to a link tag.
 		 */
-		$rel = apply_filters( 'make_clickable_rel', $rel, $url );
+		$rel = apply_filters( 'quotes_llama_make_clickable_rel', $rel, $url );
 		$rel = esc_attr( $rel );
 
 		// Display http in links if enabled.
@@ -1414,6 +1414,9 @@ class QuotesLlama {
 		// Search css.
 		wp_register_style( 'quotes-llama-css-search', QL_URL . 'includes/css/quotes-llama-search.css', array(), $this->plugin_version() );
 
+		// URL css.
+		wp_register_style( 'quotes-llama-css-url', QL_URL . 'includes/css/quotes-llama-url.css', array(), $this->plugin_version() );
+
 		// Search results alternate target class css.
 		wp_register_style( 'quotes-llama-css-search-target', QL_URL . 'includes/css/quotes-llama-search-target.css', array(), $this->plugin_version() );
 
@@ -1502,7 +1505,6 @@ class QuotesLlama {
 			'BorderRadius'     => isset( $this->plugin_options['border_radius'] ) ? $this->plugin_options['border_radius'] : false,
 			'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
 			'AlignQuote'       => isset( $this->plugin_options['align_quote'] ) ? $this->plugin_options['align_quote'] : 'left',
-			'ImageAtTop'       => isset( $this->plugin_options['image_at_top'] ) ? $this->plugin_options['image_at_top'] : false,
 			'ThisDIR'          => $this->icons_dir,
 			'ThisURL'          => $this->icons_url,
 			'AllQuotes'        => $this->select_all(),
@@ -1574,11 +1576,8 @@ class QuotesLlama {
 	 *
 	 * @since 1.0.0
 	 * @access public
-	 *
-	 * @param string $cat      - Category.
-	 * @param int    $qlcount  - How many quotes.
 	 */
-	public function select_author( $cat = '', $qlcount = 1 ) {
+	public function select_author() {
 		global $wpdb;
 
 		// Page, get all quotes for a author.
@@ -2063,18 +2062,14 @@ class QuotesLlama {
 	 *
 	 * @since 1.0.0
 	 * @access public
-	 *
-	 * @param int    $quote_id - Id of quote.
-	 * @param string $cat      - Category.
-	 * @param int    $qlcount  - How many quotes.
 	 */
-	public function select_search( $quote_id = 0, $cat = '', $qlcount = 1 ) {
+	public function select_search() {
 		global $wpdb;
 
 		// Search, search bar and submit button only.
 		if ( isset( $_POST['search_form'] ) ) {
 
-			$nonce         = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+			$nonce         = isset( $_POST['ql_token'] ) ? sanitize_text_field( wp_unslash( $_POST['ql_token'] ) ) : '';
 			$term          = isset( $_POST['term'] ) ? sanitize_text_field( wp_unslash( $_POST['term'] ) ) : '';
 			$search_column = isset( $_POST['sc'] ) ? sanitize_text_field( wp_unslash( $_POST['sc'] ) ) : 'quote';
 			$target_class  = isset( $_POST['target'] ) ? sanitize_text_field( wp_unslash( $_POST['target'] ) ) : 'quotes-llama-search';
@@ -2089,7 +2084,7 @@ class QuotesLlama {
 			if ( wp_verify_nonce( $nonce, 'quotes_llama_nonce' ) ) {
 				$like   = '%' . $wpdb->esc_like( $term ) . '%';
 				$quotes = $wpdb->get_results( // phpcs:ignore
-					$wpdb->prepare(
+					$wpdb->prepare( // phpcs:ignore
 						'SELECT
 						quote,
 						title_name,
@@ -2100,7 +2095,7 @@ class QuotesLlama {
 						author_icon,
 						source_icon,
 						category FROM ' . $wpdb->prefix . 'quotes_llama' .
-						' WHERE %1s LIKE %s' .  // phpcs:ignore
+						' WHERE %i LIKE %s' . // phpcs:ignore
 						'ORDER BY title_name, last_name, first_name, quote',
 						$search_column,
 						$like
@@ -2121,17 +2116,13 @@ class QuotesLlama {
 	 *
 	 * @since 1.0.0
 	 * @access public
-	 *
-	 * @param int    $quote_id - Id of quote.
-	 * @param string $cat      - Category.
-	 * @param int    $qlcount  - How many quotes.
 	 */
-	public function select_search_page( $quote_id = 0, $cat = '', $qlcount = 1 ) {
+	public function select_search_page() {
 		global $wpdb;
 
 		// Page, Search for quote.
 		if ( isset( $_POST['search_for_quote'] ) ) {
-			$nonce         = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+			$nonce         = isset( $_POST['ql_token'] ) ? sanitize_text_field( wp_unslash( $_POST['ql_token'] ) ) : '';
 			$term          = isset( $_POST['term'] ) ? sanitize_text_field( wp_unslash( $_POST['term'] ) ) : '';
 			$search_column = isset( $_POST['sc'] ) ? sanitize_text_field( wp_unslash( $_POST['sc'] ) ) : 'quote';
 
@@ -2156,7 +2147,7 @@ class QuotesLlama {
 						author_icon,
 						source_icon,
 						category FROM ' . $wpdb->prefix . 'quotes_llama' .
-						' WHERE %1s LIKE %s' .  // phpcs:ignore
+						' WHERE %i LIKE %s' .
 						'ORDER BY title_name, last_name, first_name, quote',
 						$search_column,
 						$like
@@ -2260,8 +2251,16 @@ class QuotesLlama {
 			$atts
 		);
 
-		// Nonce for [quotes-llama all=..] short-codes.
-		$nonce = wp_create_nonce( 'quotes_llama_all' );
+		// [quotes-llama mode='url'] Display an Authors quotes from a URL.
+		if ( 'url' === $att_array['mode'] ) {
+
+			if ( ! class_exists( 'QuotesLlama_URL' ) ) {
+				require_once 'includes/classes/class-quotesllama-url.php';
+			}
+
+			$ql_url = new QuotesLlama_URL();
+			return $ql_url->quotes_from_url( wp_create_nonce( 'quotes_llama_url' ) );
+		}
 
 		// [quotes-llama mode='auto' cat='category'] Display quote from category in auto-refresh mode.
 		if ( $att_array['cat'] && ( 'auto' === $att_array['mode'] ) ) {
@@ -2402,6 +2401,9 @@ class QuotesLlama {
 
 		// [quotes-llama all=''] short-codes.
 		if ( $att_array['all'] ) {
+
+			// Nonce for [quotes-llama all=..] short-codes.
+			$nonce = wp_create_nonce( 'quotes_llama_all' );
 
 			if ( ! class_exists( 'QuotesLlama_All' ) ) {
 				require_once 'includes/classes/class-quotesllama-all.php';

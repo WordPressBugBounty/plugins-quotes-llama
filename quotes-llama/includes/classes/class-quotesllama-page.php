@@ -109,11 +109,11 @@ class QuotesLlama_Page {
 				}
 				$template_page_loggedin = '<div class="quotes-llama-page-quotes-form">' .
 					'<form onsubmit="return false;" method="post">' .
+						'<input type="hidden" class="quotes-llama-page-token" name="ql_token" value="' . $nonce . '" >' .
 						'<input type="text" ' .
 							'class="quotes-llama-page-quotesearch" ' .
 							'id="quotes-llama-page-quotesearch" ' .
 							'name="quotes-llama-page-quotesearch" ' .
-							'nonce="' . $nonce . '" ' .
 							'size="20">' .
 						'<br><select name="sc" class="sc">' .
 							'<option value="quote">' .
@@ -192,15 +192,13 @@ class QuotesLlama_Page {
 
 					if ( $last_name ) { // Does this author have last name.
 						$name_index = strtoupper( substr( $last_name, 0, 1 ) );
-					} else { // Prepare for sorting.
-						if ( $first_name ) { // If last_name is empty then assign first to last so.
-							$last_name  = $first_name; // It will sort into last names.
-							$first_name = '';
-							$name_index = strtoupper( substr( $last_name, 0, 1 ) );
-							$name_shift = true;
-						} else {
-							$name_index = '';
-						}
+					} elseif ( $first_name ) { // If last_name is empty then assign first to last so.
+						$last_name  = $first_name; // It will sort into last names.
+						$first_name = '';
+						$name_index = strtoupper( substr( $last_name, 0, 1 ) );
+						$name_shift = true;
+					} else {
+						$name_index = '';
 					}
 
 					$initials[] = array(
@@ -281,18 +279,16 @@ class QuotesLlama_Page {
 						// If first and last name, or just first.
 						if ( $quote_author['first'] && $quote_author['last'] ) {
 							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . ', ' . $quote_author['first'] . $title_name ) ) );
+						} elseif ( $quote_author['last'] ) {
+							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . $title_name ) ) );
 						} else {
-							if ( $quote_author['last'] ) {
-								$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . $title_name ) ) );
-							} else {
-								$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['first'] . $title_name ) ) );
-							}
+							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['first'] . $title_name ) ) );
 						}
 
 						$author_link_list .= '</a></li>';
 
 						// Local id for next author.
-						$local_id++;
+						++$local_id;
 					} else {
 
 						// Add letter to sidebar separator and add author.
@@ -315,17 +311,15 @@ class QuotesLlama_Page {
 						// If first and last name, or just first.
 						if ( $quote_author['first'] && $quote_author['last'] ) {
 							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . ', ' . $quote_author['first'] . $title_name ) ) );
+						} elseif ( $quote_author['last'] ) {
+							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . $title_name ) ) );
 						} else {
-							if ( $quote_author['last'] ) {
-								$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['last'] . $title_name ) ) );
-							} else {
-								$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['first'] . $title_name ) ) );
-							}
+							$author_link_list .= wp_kses_post( $this->ql->clickable( trim( $quote_author['first'] . $title_name ) ) );
 						}
 
 						$author_link_list  .= '</a></li>';
 						$current_quote_data = $quote_author['index'];
-						$local_id++;
+						++$local_id;
 					}
 				}
 

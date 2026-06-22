@@ -25,7 +25,6 @@ class QuotesLlama_Search_Results {
 	 * @access public
 	 */
 	public function __construct() {
-
 	}
 
 	/**
