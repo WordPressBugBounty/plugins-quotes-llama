@@ -4,29 +4,26 @@
 
 /* Wrapper */
 .quotes-llama-auto {
-	max-width: 700px;
-	margin: 20px auto;
-	padding: 20px;
 	display: inline-block;
+	max-width: 700px;
+	padding: 5px;
+}
+
+.quotes-llama-auto-quote {
+	display: block;
+	min-height: 180px;
+	padding: 5px;
 }
 
 .quotes-llama-auto img {
 	max-width: 150px;
-	height: auto;
+	max-height: 150px;
 	margin-right: 10px;
 	border-radius: 5px;
 	box-shadow: 3px 5px 6px 0px rgba(0,0,0,0.45);
 	float: left;
 }
 
-/* Quote */
-.quotes-llama-auto-quote {
-	display: block;
-	padding: 15px;
-	min-height: 120px;
-}
-
-/* Author and source */
 .quotes-llama-auto-author {
 	display: block;
 	text-align: right;
@@ -40,32 +37,13 @@
 	font-style: italic;
 }
 
-/* Countdown indicator */
 .quotes-llama-auto-countdown {
-	margin-top: 15px;
-	font-size: 0.85rem;
-	text-align: right;
-	opacity: 0.8;
-	min-height: 25px;
+	float: right;
+	top: 3px;
+	right: 3px;
+	padding-right: 5px;
 }
 
-/* Re-enable indicator (if used by JS) */
 .quotes-llama-auto-reenable {
 	cursor: pointer;
-	font-weight: bold;
-}
-
-/* ------------
-	Responsive
-	----------- */
-@media (max-width: 768px) {
-	.quotes-llama-auto-quote {
-		font-size: 1.2rem;
-	}
-}
-
-@media (max-width: 1298px) {
-	.quotes-llama-auto-quote {
-		font-size: 1.1rem;
-	}
 }

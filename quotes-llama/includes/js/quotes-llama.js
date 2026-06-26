@@ -1476,7 +1476,7 @@ jQuery.fn.quotes_llama_countdown = function ( duration, mode, uid ) {
 				function () {
 
 					// If seconds remain.
-					if ( --duration > 1 ) {
+					if ( --duration > 0 ) {
 
 						// Update the timer display.
 						jQuery( '.' + uid + '-countdown' ).html( '<small>' + duration + 's</small>' );
@@ -1862,15 +1862,17 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 				}
 
 				// Mode being gallery or auto... Render to the div.
-				jQuery(
-					'.' + uid + '-quotebox'
-				).html(
-					"<div class='quotes-llama-" + mode + "-quote' onClick='quotes_llama_manualnext(\"" + uid + "\", " + tuid + ", " + suid + ", \"" + mode + "\", \"" + gcategory + "\", \"" + nonce + "\");'>" + rand_img +
-					"<div class='quotes-llama-" + mode + "-quote quotes-llama-" + uid + "-more'>" + rand_quote +
-					" <span class='quotes-llama-" + mode + "-author'>" +
-					author_icon.trim() + rand_name + rand_comma +
-					"<span class='quotes-llama-" + mode + "-source'>" + source_icon + rand_source + "</span>" +
-					"</span></div></div>"
+				jQuery( '.' + uid + '-quotebox' ).html(
+					"<div class='quotes-llama-" + mode + "-quote quotes-llama-click' data-uid='" + uid + "' data-tuid='" + tuid + "' data-suid='" + suid + "' data-mode='" + mode + "' data-gcategory='" + gcategory + "' data-nonce='" + nonce + "'>" +
+						rand_img +
+						"<div class='quotes-llama-" + mode + "-quote quotes-llama-" + uid + "-more'>" +
+							rand_quote +
+							" <span class='quotes-llama-" + mode + "-author'>" +
+								author_icon.trim() + rand_name + rand_comma +
+								"<span class='quotes-llama-" + mode + "-source'>" + source_icon + rand_source + "</span>" +
+							"</span>" +
+						"</div>" +
+					"</div>"
 				);
 
 				// Reformat quote if having character limit.
@@ -1918,6 +1920,26 @@ function quotes_llama_quote( mode, loop, uid, tuid, cat, nonce ) {
 		);
 	}
 }
+
+// Listener for above function.
+document.addEventListener(
+	"click",
+	function ( e ) {
+		const elem = e.target.closest( ".quotes-llama-click" );
+		if ( ! elem ) {
+			return;
+		}
+
+		quotes_llama_manualnext(
+			elem.dataset.uid,
+			parseInt( elem.dataset.tuid ),
+			parseInt( elem.dataset.suid ),
+			elem.dataset.mode,
+			elem.dataset.gcategory,
+			elem.dataset.nonce
+		);
+	}
+);
 
 // ***** End Gallery-Auto-Widget *****
 // ***** Begin Formats *****

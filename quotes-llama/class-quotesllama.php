@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Quotes llama
  * Plugin URI:  https://oooorgle.com/plugins/wp/quotes-llama/
- * Version:     3.1.6
+ * Version:     3.1.7
  * Description: Share the thoughts that mean the most... display your quotes in blocks, widgets, pages, templates, galleries or posts.
  * Author:      oooorgle
  * Author URI:  https://oooorgle.com/plugins/wp/quotes-llama/
@@ -26,7 +26,7 @@ defined( 'QL_URL' ) || define( 'QL_URL', plugin_dir_url( __FILE__ ) );
 defined( 'QL_PATH' ) || define( 'QL_PATH', plugin_dir_path( __FILE__ ) );
 
 // Plugin versions.
-defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.6' );
+defined( 'QL_PLUGIN_VERSION' ) || define( 'QL_PLUGIN_VERSION', '3.1.7' );
 defined( 'QL_DB_VERSION' ) || define( 'QL_DB_VERSION', '2.0.1' );
 
 /**

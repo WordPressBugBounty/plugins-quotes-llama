@@ -188,29 +188,6 @@ input.quotes-llama-print {
 	font-weight: 500;
 }
 
-/* ------------
-	Responsive
-	----------- */
-@media (max-width: 1024px) {
-	.quotes-llama-page-quote-more {
-		font-size: 1.0rem;
-	}
-
-	.quotes-llama-page-quotebox img  {
-		max-width: 120px;
-	}
-}
-
-@media (max-width: 800px) {
-	.quotes-llama-page-quote-more {
-		font-size: 0.95rem;
-	}
-
-	.quotes-llama-page-quotebox img  {
-		max-width: 90px;
-	}
-}
-
 /* =======
 	Print
 	====== */

@@ -61,34 +61,3 @@
 	font-size: small;
 	font-style: italic;
 }
-
-/* ------------
-	Responsive
-	----------- */
-@media (max-width: 1024px) {
-	.quotes-llama-gallery-quotebox {
-		font-size: 0.95rem;
-	}
-
-	.quotes-llama-gallery-author {
-		font-size: 0.90rem;
-	}
-
-	.quotes-llama-gallery img  {
-		max-width: 120px;
-	}
-}
-
-@media (max-width: 800px) {
-	.quotes-llama-gallery-quotebox {
-		font-size: 0.90rem;
-	}
-
-	.quotes-llama-gallery-author {
-		font-size: 0.85rem;
-	}
-
-	.quotes-llama-gallery img  {
-		max-width: 90px;
-	}
-}

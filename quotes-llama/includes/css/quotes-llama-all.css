@@ -75,34 +75,3 @@
 	transform: translateY(-3px);
 	box-shadow: 0 6px 12px rgba( 0,0,0,0.2 );
 }
-
-/* ------------
-	Responsive
-	----------- */
-@media (max-width: 1024px) {
-	.quotes-llama-all-span {
-		font-size: 0.95rem;
-	}
-
-	.quotes-llama-all-author {
-		font-size: 0.90rem;
-	}
-
-	.quotes-llama-all-quote img  {
-		max-width: 120px;
-	}
-}
-
-@media (max-width: 800px) {
-	.quotes-llama-all-span {
-		font-size: 0.90rem;
-	}
-
-	.quotes-llama-all-author {
-		font-size: 0.85rem;
-	}
-
-	.quotes-llama-all-quote img  {
-		max-width: 90px;
-	}
-}

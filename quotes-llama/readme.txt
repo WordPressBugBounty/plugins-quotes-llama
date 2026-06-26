@@ -4,7 +4,7 @@ Donate link: http://oooorgle.com/plugins/wp/quotes-llama/
 Tags: Quote, Think, Share
 Requires at least: 6.2.0
 Tested up to: 7.0
-Stable tag: 3.1.6
+Stable tag: 3.1.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -254,8 +254,3 @@ Short-codes are informational and for example only. Depending on your encoding, 
 = Upgrade Notice =
 * If you encounter problems, please refer to the Support and Troubleshooting FAQ.
 * [Version History](https://oooorgle.com/downloads/quotes-llama/dev/versions.htm)
-
-== Screenshots ==
-1. Administration.
-2. Page of Authors.
-3. Widget.
